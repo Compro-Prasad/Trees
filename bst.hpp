@@ -7,7 +7,7 @@ public:
 	BinarySearchTree() : tree<Type>() { }
 	BinarySearchTree(branch<Type> *root) : tree<Type>(root) { }
 	branch<Type> *Root() { return this->root; }
-	void insert(Type e);
+	void add(Type e);
 	void remove(Type e);
 	bool check(Type e);
 	void print() {
@@ -16,19 +16,20 @@ public:
 };
 
 template <typename Type>
-void BinarySearchTree<Type>::insert(Type e)
+void BinarySearchTree<Type>::add(Type e)
 {
 	branch<Type> **t = &this->root;
 	while (*t)
 	{
 		if ((*t)->data == e)
 		{
-			cerr << "Error: Unable to insert duplicate element\n";
+			cerr << "Error: Unable to add duplicate element\n";
 			return;
 		}
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
 	*t = new branch<Type>(e);
+	this->root->updateHeight();
 }
 
 template <typename Type>

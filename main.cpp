@@ -16,7 +16,7 @@ int main()
 		case 1:
 			cout << "Enter element: ";
 			cin >> x;
-			t.insert(x);
+			t.add(x);
 			t.print();
 			break;
 		case 2:

@@ -5,22 +5,32 @@ using namespace std;
 template <typename Type>
 class branch
 {
+private:
+	int height;
+	int heightBalance;
 public:
 	Type data;
 	branch<Type> *right;
 	branch<Type> *left;
 	branch() {
 		this->data = 0;
+		this->height = this->heightBalance = 0;
 		this->right = this->left = NULL;
 	}
 	branch(Type e) {
 		this->data = e;
+		this->height = this->heightBalance = 0;
 		this->right = this->left = NULL;
 	}
 	branch(const branch &b) {
 		this->data = b.data;
 		this->right = b.right;
 		this->left = b.left;
+		this->height = b.height;
+		this->heightBalance = b.heightBalance;
+	}
+	int Height() {
+		return this->height;
 	}
 	void operator=(const branch &b) {
 		this->data = b.data;
@@ -30,10 +40,12 @@ public:
 	void operator=(const Type t) {
 		this->data = t;
 	}
-	int height() {
-		int l = left  ? left->height()  : 0;
-		int r = right ? right->height() : 0;
-		return 1 + max(l, r);
+	int updateHeight() {
+		int l = left  ? left->updateHeight()  : 0;
+		int r = right ? right->updateHeight() : 0;
+	    heightBalance = l - r;
+		height        = max(l, r);
+		return 1 + height;
 	}
 	bool isLeaf()            { return !this->right && !this->left;  }
 	bool isOnlyRightLinked() { return this->right  && !this->left; }
@@ -41,7 +53,7 @@ public:
 	bool isRightLinked()     { return this->right; }
 	bool isLeftLinked()      { return this->left;  }
 	void print() {
-		cout << this->data << " : " << this << "\n\t";
+		cout << this->data << " : " << this << " : " << this->height << "\n\t";
 		cout << "Left  : " << this->left  << "\n\t";
 		cout << "Right : " << this->right << "\n";
 	}

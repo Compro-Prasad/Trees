@@ -3,22 +3,17 @@
 template <typename Type>
 class tree
 {
-protected:
-	int height;
 public:
 	branch<Type> *root;
 	tree() {
 		this->root = NULL;
-		this->height = 0;
 	}
 	tree(branch<Type> *root) {
 		this->root = root;
-		this->update_height();
+		root->updateHeight();
 	}
-	void update_height() {
-		this->height = this->root ? this->root->height() : 0;
-	}
-	int tree_height() {
-		return this->height;
+	bool isEmpty() { return !this->root; }
+	void updateHeight() {
+		if (this->root) this->root->updateHeight();
 	}
 };
