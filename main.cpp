@@ -1,4 +1,4 @@
-#include "avl.hpp"
+#include "bst.hpp"
 
 int main()
 {
