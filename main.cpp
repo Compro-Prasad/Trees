@@ -1,5 +1,5 @@
 #include "bst.hpp"
-
+using namespace std;
 int main()
 {
 	int choice, x;

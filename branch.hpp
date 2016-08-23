@@ -5,21 +5,20 @@ using namespace std;
 template <typename Type>
 class branch
 {
-private:
+protected:
 	int height;
-	int heightBalance;
 public:
 	Type data;
 	branch<Type> *right;
 	branch<Type> *left;
 	branch() {
 		this->data = 0;
-		this->height = this->heightBalance = 0;
+		this->height = 0;
 		this->right = this->left = NULL;
 	}
 	branch(Type e) {
 		this->data = e;
-		this->height = this->heightBalance = 0;
+		this->height = 0;
 		this->right = this->left = NULL;
 	}
 	branch(const branch &b) {
@@ -41,11 +40,10 @@ public:
 		this->data = t;
 	}
 	int updateHeight() {
-		int l = left  ? left->updateHeight()  : 0;
-		int r = right ? right->updateHeight() : 0;
-	    heightBalance = l - r;
-		height        = 1 + max(l, r);
-		return height;
+		int l = left  ? this->left->updateHeight()  : 0;
+		int r = right ? this->right->updateHeight() : 0;
+		this->height = 1 + max(l, r);
+		return this->height;
 	}
 	bool isLeaf()            { return !this->right && !this->left;  }
 	bool isOnlyRightLinked() { return this->right  && !this->left; }
@@ -85,3 +83,21 @@ void branch<Type>::inOrderPrint()
 	this->print();
 	if (this->right)  this->right->inOrderPrint();
 }
+
+template <typename Type>
+class AVLbranch : public branch<Type>
+{
+protected:
+	int heightBalance;
+public:
+	AVLbranch() {
+		this->heightBalance = 0;
+	}
+	int updateHeight() {
+		int l = left  ? this->left->updateHeight()  : 0;
+		int r = right ? this->right->updateHeight() : 0;
+		this->heightBalance = l - r;
+		this->height        = 1 + max(l, r);
+		return this->height;
+	}
+};
