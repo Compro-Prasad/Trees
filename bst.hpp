@@ -29,7 +29,7 @@ void BinarySearchTree<Type>::add(Type e)
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
 	*t = new branch<Type>(e);
-	this->root->updateHeight();
+	if (this->autoUpdateHeight) this->root->updateHeight();
 }
 
 template <typename Type>
@@ -57,6 +57,8 @@ void BinarySearchTree<Type>::remove(Type e)
 				*t = (*t)->right;
 			}
 			delete z;
+			if (this->autoUpdateHeight && this->root)
+				this->root->updateHeight();
 			return;
 		}
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;

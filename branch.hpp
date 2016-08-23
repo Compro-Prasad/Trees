@@ -44,8 +44,8 @@ public:
 		int l = left  ? left->updateHeight()  : 0;
 		int r = right ? right->updateHeight() : 0;
 	    heightBalance = l - r;
-		height        = max(l, r);
-		return 1 + height;
+		height        = 1 + max(l, r);
+		return height;
 	}
 	bool isLeaf()            { return !this->right && !this->left;  }
 	bool isOnlyRightLinked() { return this->right  && !this->left; }
