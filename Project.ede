@@ -1,0 +1,15 @@
+;; Object Trees
+;; EDE Project Files are auto generated: Do Not Edit
+(ede-proj-project "Trees"
+  :file "Project.ede"
+  :name "Trees"
+  :targets
+  (list
+    (ede-proj-target-makefile-program "main.cpp"
+      :name "main.cpp"
+      :path ""
+      :source '("main.cpp"))
+    (ede-proj-target-makefile-program "main.cpp"
+      :name "main.cpp"
+      :path ""
+      :source '("main.cpp"))))

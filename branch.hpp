@@ -40,8 +40,8 @@ public:
 		this->data = t;
 	}
 	int updateHeight() {
-		int l = left  ? this->left->updateHeight()  : 0;
-		int r = right ? this->right->updateHeight() : 0;
+		int l = this->left  ? this->left->updateHeight()  : 0;
+		int r = this->right ? this->right->updateHeight() : 0;
 		this->height = 1 + max(l, r);
 		return this->height;
 	}
@@ -85,19 +85,70 @@ void branch<Type>::inOrderPrint()
 }
 
 template <typename Type>
-class AVLbranch : public branch<Type>
+class AdvBranch : public branch<Type>
 {
 protected:
 	int heightBalance;
+	AdvBranch<Type> *parent;
 public:
-	AVLbranch() {
+	AdvBranch() {
+		this->parent = NULL;
 		this->heightBalance = 0;
 	}
+	AdvBranch(AdvBranch<Type> *parent) {
+		this->parent = parent;
+		this->heightBalance = 0;
+	}
+	AdvBranch(Type e, AdvBranch<Type> *parent) {
+		this->data = e;
+		this->parent = parent;
+		this->updateHeight();
+	}
+	void print() {
+		cout << this->data << " : " << this << " : " << this->heightBalance << "\n\t";
+		cout << "Left  : " << this->left  << "\n\t";
+		cout << "Right : " << this->right << "\n";
+	}
 	int updateHeight() {
-		int l = left  ? this->left->updateHeight()  : 0;
-		int r = right ? this->right->updateHeight() : 0;
+		int l = this->left  ? this->left->updateHeight()  : 0;
+		int r = this->right ? this->right->updateHeight() : 0;
 		this->heightBalance = l - r;
 		this->height        = 1 + max(l, r);
 		return this->height;
+	}
+	void rotateAntiClockwise(AdvBranch<Type> **thisAddrPtr) {
+		if (*thisAddrPtr == this && this->right)
+		{
+			AdvBranch<Type> *k = this->right->left;
+			this->right->left = this;
+			*thisAddrPtr = this->right;
+			this->right = k;
+		}
+	}
+	void rotateClockwise(AdvBranch<Type> **thisAddrPtr) {
+		if (*thisAddrPtr == this && this->leftt)
+		{
+			AdvBranch<Type> *k = this->left->right;
+			this->left->right = this;
+			*thisAddrPtr = this->leftt;
+			this->left = k;
+		}
+	}
+	AdvBranch<Type> *brother() {
+		return this->parent ? this->parent->left == this ? this->right : this->left : NULL;
+	}
+	AdvBranch<Type> *grandParent() {
+		return this->parent ? this->parent->parent : NULL;
+	}
+	AdvBranch<Type> *uncle() {
+		return this->parent ? this->parent->brother() : NULL;
+	}
+	AdvBranch<Type> *leftCousin() {
+		AdvBranch<Type> *u = this->uncle();
+		return u ? u->left : NULL;
+	}
+	AdvBranch<Type> *rightCousin() {
+		AdvBranch<Type> *u = this->uncle();
+		return u ? u->right : NULL;
 	}
 };

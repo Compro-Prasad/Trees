@@ -6,6 +6,7 @@ class tree
 public:
 	static bool autoUpdateHeight;
 	branch<Type> *root;
+	branch<Type> *Root() { return this->root; }
 	tree() {
 		this->root = NULL;
 	}

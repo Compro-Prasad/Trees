@@ -6,7 +6,7 @@ class BinarySearchTree : public tree<Type>
 public:
 	BinarySearchTree() : tree<Type>() { }
 	BinarySearchTree(branch<Type> *root) : tree<Type>(root) { }
-	branch<Type> *Root() { return this->root; }
+
 	void add(Type e);
 	void remove(Type e);
 	bool check(Type e);
