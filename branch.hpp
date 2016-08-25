@@ -38,6 +38,24 @@ public:
 	}
 	void operator=(const Type t) {
 		this->data = t;
+	} 
+	void rotateAntiClockwise(branch<Type> **thisAddrPtr) {
+		if (*thisAddrPtr == this && this->right)
+		{
+			branch<Type> *k = this->right->left;
+			this->right->left = this;
+			*thisAddrPtr = this->right;
+			this->right = k;
+		}
+	}
+	void rotateClockwise(branch<Type> **thisAddrPtr) {
+		if (*thisAddrPtr == this && this->leftt)
+		{
+			branch<Type> *k = this->left->right;
+			this->left->right = this;
+			*thisAddrPtr = this->leftt;
+			this->left = k;
+		}
 	}
 	int updateHeight() {
 		int l = this->left  ? this->left->updateHeight()  : 0;
@@ -120,17 +138,23 @@ public:
 		if (*thisAddrPtr == this && this->right)
 		{
 			AdvBranch<Type> *k = this->right->left;
+			this->right->parent = this->parent;
+			this->parent = this->right;
+			if (k) k->parent = this;
 			this->right->left = this;
 			*thisAddrPtr = this->right;
 			this->right = k;
 		}
 	}
 	void rotateClockwise(AdvBranch<Type> **thisAddrPtr) {
-		if (*thisAddrPtr == this && this->leftt)
+		if (*thisAddrPtr == this && this->left)
 		{
 			AdvBranch<Type> *k = this->left->right;
+			this->left->parent = this->parent;
+			this->parent = this->left;
+			if (k) k->parent = this;
 			this->left->right = this;
-			*thisAddrPtr = this->leftt;
+			*thisAddrPtr = this->left;
 			this->left = k;
 		}
 	}
