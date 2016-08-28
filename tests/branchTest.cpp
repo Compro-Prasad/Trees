@@ -14,7 +14,6 @@ void display(t *start, const t *end, string sep = " ")
 template <typename t>
 void test(t a[], size_t size)
 {
-	pause();
 	BinarySearchTree<t> tree;
 	t *b = new t[size], *c = new t[size];
 	size_t s = 0;
@@ -24,8 +23,6 @@ void test(t a[], size_t size)
 
 	copy(a, a + size, b);
 	sort(b, b + size);
-
-	pause();
 
 	if (!memcmp(b, c, size * sizeof(t)) && size == s)
 	{
