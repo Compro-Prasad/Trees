@@ -5,30 +5,55 @@ class AVLtree : public BinarySearchTree<Type>
 {
 public:
 	AVLtree() : BinarySearchTree<Type>() { }
-	AVLtree(AdvBranch<Type> *root) : BinarySearchTree<Type>(root) { }
-	AdvBranch<Type> *Root() { this->root; }
+	AVLtree(branch<Type> *root) : BinarySearchTree<Type>(root) { }
+	branch<Type> *Root() { this->root; }
 	void add(Type e);
+	void add(Type a[], size_t size);
 	void remove(Type e);
+	void remove(Type a[], size_t size);
 	bool check(Type e);
-	void print() {
-		if (this->root) this->root->inOrderPrint();
-	}
 };
 
 template <typename Type>
 void AVLtree<Type>::add(Type e)
 {
-	AdvBranch<Type> **t = &this->root, *z = NULL;
-	while (*t)
-	{
-		if ((*t)->data == e)
-		{
-			cerr << "Error: Unable to add duplicate element\n";
-			return;
-		}
-		z = *t;
-		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
-	}
-	*t = new AdvBranch<Type>(e, z);
-	if (this->autoUpdateHeight) this->root->updateHeight();
+	bool autoUpdate = this->autoUpdateHeight;
+	this->autoUpdateHeight = false;
+	BinarySearchTree<Type>::add(e);
+	this->autoUpdateHeight = autoUpdate;
+	if (this->autoUpdateHeight && this->root) this->root->balanceHeight(&this->root);
+}
+
+template <typename Type>
+void AVLtree<Type>::add(Type a[], size_t size)
+{
+	bool autoUpdate = this->autoUpdateHeight;
+	this->autoUpdateHeight = false;
+	for (size_t i = 0; i < size; ++i)
+		this->add(a[i]);
+	this->autoUpdateHeight = autoUpdate;
+	if (this->autoUpdateHeight && this->root)
+		this->root->balanceHeight(&this->root);
+}
+
+template <typename Type>
+void AVLtree<Type>::remove(Type e)
+{
+	bool autoUpdate = this->autoUpdateHeight;
+	this->autoUpdateHeight = false;
+	BinarySearchTree<Type>::remove(e);
+	this->autoUpdateHeight = autoUpdate;
+	if (this->autoUpdateHeight && this->root) this->root->balanceHeight(&this->root);
+}
+
+template <typename Type>
+void AVLtree<Type>::remove(Type a[], size_t size)
+{
+	bool autoUpdate = this->autoUpdateHeight;
+	this->autoUpdateHeight = false;
+	for (size_t i = 0; i < size; ++i)
+		this->remove(a[i]);
+	this->autoUpdateHeight = autoUpdate;
+	if (this->autoUpdateHeight && this->root)
+		this->root->balanceHeight(&this->root);
 }

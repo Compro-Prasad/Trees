@@ -49,17 +49,56 @@ public:
 		}
 	}
 	void rotateClockwise(branch<Type> **thisAddrPtr) {
-		if (*thisAddrPtr == this && this->leftt)
+		if (*thisAddrPtr == this && this->left)
 		{
 			branch<Type> *k = this->left->right;
 			this->left->right = this;
-			*thisAddrPtr = this->leftt;
+			*thisAddrPtr = this->left;
 			this->left = k;
 		}
 	}
 	size_t updateHeight() {
 		size_t l = this->left  ? this->left->updateHeight()  : 0;
 		size_t r = this->right ? this->right->updateHeight() : 0;
+		this->height = 1 + max(l, r);
+		return this->height;
+	}
+	size_t balanceHeight(branch<Type> **thisAddrPtr) {
+		size_t l = this->left  ? this->left->balanceHeight(&this->left)   : 0;
+		size_t r = this->right ? this->right->balanceHeight(&this->right) : 0;
+		if ((long)l - (long)r == 2)
+		{
+			size_t ll = this->left->right ? this->left->right->height : 0;
+			size_t lr = this->left->left  ? this->left->left->height  : 0;
+			switch ((long)ll - (long)lr)
+			{
+			case 0:
+			case 1:
+				rotateClockwise(thisAddrPtr);
+				break;
+			case -1:
+				rotateAntiClockwise(&this->right);
+				rotateClockwise(thisAddrPtr);
+			}
+			balanceHeight(thisAddrPtr);
+			return this->height;
+		}
+		else if ((long)l - (long)r == -2)
+		{
+			size_t rl = this->left->right ? this->left->right->height : 0;
+			size_t rr = this->left->left  ? this->left->left->height  : 0;
+			switch ((long)rl - (long)rr)
+			{
+			case 0:
+			case -1:
+				rotateAntiClockwise(thisAddrPtr);
+				break;
+			case 1:
+				rotateClockwise(&this->left);
+				rotateAntiClockwise(thisAddrPtr);
+			}
+			return balanceHeight(thisAddrPtr);
+		}
 		this->height = 1 + max(l, r);
 		return this->height;
 	}
@@ -139,16 +178,13 @@ template <typename Type>
 class AdvBranch : public branch<Type>
 {
 protected:
-	long heightBalance;
 	AdvBranch<Type> *parent;
 public:
 	AdvBranch() {
 		this->parent = NULL;
-		this->heightBalance = 0;
 	}
 	AdvBranch(AdvBranch<Type> *parent) {
 		this->parent = parent;
-		this->heightBalance = 0;
 	}
 	AdvBranch(Type e, AdvBranch<Type> *parent) {
 		this->data = e;
@@ -163,7 +199,6 @@ public:
 	size_t updateHeight() {
 		size_t l = this->left  ? this->left->updateHeight()  : 0;
 		size_t r = this->right ? this->right->updateHeight() : 0;
-		this->heightBalance = (long)l - (long)r;
 		this->height        = 1 + max(l, r);
 		return this->height;
 	}
