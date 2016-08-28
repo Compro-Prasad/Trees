@@ -32,7 +32,10 @@ void BinarySearchTree<Type>::copyToArrIncOrder(Type A[], size_t &size)
 template <typename Type>
 void BinarySearchTree<Type>::copyToArrDecOrder(Type A[], size_t &size)
 {
-	this->root->copyToArrDecOrder(A, size);
+	if (this->root)
+		this->root->copyToArrDecOrder(A, size);
+	else
+		size = 0;
 }
 
 template <typename Type>
