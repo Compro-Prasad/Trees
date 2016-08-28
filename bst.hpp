@@ -13,23 +13,26 @@ public:
 	void remove(Type e);
 	void remove(Type a[], size_t size);
 	bool check(Type e);
-	void putInArrayInInc(Type A[], size_t &size);
-	void putInArrayInDec(Type A[], size_t &size);
+	void copyToArrIncOrder(Type A[], size_t &size);
+	void copyToArrDecOrder(Type A[], size_t &size);
 	void print(bool printAll) {
 		if (this->root) this->root->inOrderPrint(printAll);
 	}
 };
 
 template <typename Type>
-void BinarySearchTree<Type>::putInArrayInInc(Type A[], size_t &size)
+void BinarySearchTree<Type>::copyToArrIncOrder(Type A[], size_t &size)
 {
-	this->root->putInArrayInInc(A, size);
+	if (this->root)
+		this->root->copyToArrIncOrder(A, size);
+	else
+		size = 0;
 }
 
 template <typename Type>
-void BinarySearchTree<Type>::putInArrayInDec(Type A[], size_t &size)
+void BinarySearchTree<Type>::copyToArrDecOrder(Type A[], size_t &size)
 {
-	this->root->putInArrayInDec(A, size);
+	this->root->copyToArrDecOrder(A, size);
 }
 
 template <typename Type>
@@ -46,7 +49,8 @@ void BinarySearchTree<Type>::add(Type e)
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
 	*t = new branch<Type>(e);
-	if (this->autoUpdateHeight) this->root->updateHeight();
+	if (this->autoUpdateHeight && this->root)
+		this->root->updateHeight();
 }
 
 template <typename Type>
@@ -57,9 +61,9 @@ void BinarySearchTree<Type>::add(Type a[], size_t size)
 	for (size_t i = 0; i < size; ++i)
 		this->add(a[i]);
 	this->autoUpdateHeight = autoUpdate;
-	if (this->autoUpdateHeight) this->root->updateHeight();
+	if (this->autoUpdateHeight && this->root)
+		this->root->updateHeight();
 }
-
 
 template <typename Type>
 void BinarySearchTree<Type>::remove(Type e)
@@ -93,6 +97,18 @@ void BinarySearchTree<Type>::remove(Type e)
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
 	cerr << "Error: Element not in the tree\n";
+}
+
+template <typename Type>
+void BinarySearchTree<Type>::remove(Type a[], size_t size)
+{
+	bool autoUpdate = this->autoUpdateHeight;
+	this->autoUpdateHeight = false;
+	for (size_t i = 0; i < size; ++i)
+		this->remove(a[i]);
+	this->autoUpdateHeight = autoUpdate;
+	if (this->autoUpdateHeight && this->root)
+		this->root->updateHeight();
 }
 
 template <typename Type>

@@ -7,7 +7,7 @@ public:
 	bool autoUpdateHeight;
 	branch<Type> *root;
 	size_t rootHeight() {
-		return root->Height();
+		return this->root ? this->root->Height() : 0;
 	}
 	branch<Type> *Root() { return this->root; }
 	tree() {
@@ -16,7 +16,7 @@ public:
 	}
 	tree(branch<Type> *root) {
 		this->root = root;
-		if (this->autoUpdateHeight) root->updateHeight();
+		if (this->autoUpdateHeight && this->root) root->updateHeight();
 	}
 	bool isEmpty() { return !this->root; }
 	void updateHeight() {
