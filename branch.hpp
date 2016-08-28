@@ -6,7 +6,7 @@ template <typename Type>
 class branch
 {
 protected:
-	int height;
+	size_t height;
 public:
 	Type data;
 	branch<Type> *right;
@@ -28,7 +28,7 @@ public:
 		this->height = b.height;
 		this->heightBalance = b.heightBalance;
 	}
-	int Height() {
+	size_t Height() {
 		return this->height;
 	}
 	void operator=(const branch &b) {
@@ -38,7 +38,7 @@ public:
 	}
 	void operator=(const Type t) {
 		this->data = t;
-	} 
+	}
 	void rotateAntiClockwise(branch<Type> **thisAddrPtr) {
 		if (*thisAddrPtr == this && this->right)
 		{
@@ -57,9 +57,9 @@ public:
 			this->left = k;
 		}
 	}
-	int updateHeight() {
-		int l = this->left  ? this->left->updateHeight()  : 0;
-		int r = this->right ? this->right->updateHeight() : 0;
+	size_t updateHeight() {
+		size_t l = this->left  ? this->left->updateHeight()  : 0;
+		size_t r = this->right ? this->right->updateHeight() : 0;
 		this->height = 1 + max(l, r);
 		return this->height;
 	}
@@ -68,45 +68,78 @@ public:
 	bool isOnlyLeftLinked()  { return !this->right && this->left;  }
 	bool isRightLinked()     { return this->right; }
 	bool isLeftLinked()      { return this->left;  }
-	void print() {
+	bool print() {
 		cout << this->data << " : " << this << " : " << this->height << "\n\t";
 		cout << "Left  : " << this->left  << "\n\t";
 		cout << "Right : " << this->right << "\n";
+		return 0;
 	}
-	void preOrderPrint();
-	void postOrderPrint();
-	void inOrderPrint();
+	void removeAll(branch<Type> **node);
+	void preOrderPrint(const bool printAll);
+	void postOrderPrint(const bool printAll);
+	void inOrderPrint(const bool printAll);
+	void putInArrayInInc(Type A[], size_t &size);
+	void putInArrayInDec(Type A[], size_t &size);
 };
 
 template <typename Type>
-void branch<Type>::preOrderPrint()
+void branch<Type>::putInArrayInInc(Type A[], size_t &size)
 {
-	this->print();
-	if (this->left)  this->left->preOrderPrint();
-	if (this->right) this->right->preOrderPrint();
+	if (this->left) this->left->putInArrayInInc(A, size);
+	A[size++] = this->data;
+	if (this->right) this->right->putInArrayInInc(A, size);
 }
 
 template <typename Type>
-void branch<Type>::postOrderPrint()
+void branch<Type>::putInArrayInDec(Type A[], size_t &size)
 {
-	if (this->left) this->left->postOrderPrint();
-	if (this->right) this->right->postOrderPrint();
-	this->print();
+	if (this->right) this->right->putInArrayInDec(A, size);
+	A[size++] = this->data;
+	if (this->left) this->left->putInArrayInDec(A, size);
 }
 
 template <typename Type>
-void branch<Type>::inOrderPrint()
+void branch<Type>::removeAll(branch<Type> **node)
 {
-	if (this->left) this->left->inOrderPrint();
-	this->print();
-	if (this->right)  this->right->inOrderPrint();
+	if (*node)
+	{
+		(*node)->removeAll(&(*node)->left);
+		(*node)->removeAll(&(*node)->right);
+		branch<Type> *z = *node;
+		*node = NULL;
+		delete z;
+	}
+}
+
+template <typename Type>
+void branch<Type>::preOrderPrint(const bool printAll)
+{
+	printAll ? this->print() : cout << this->data << " ";
+	if (this->left)  this->left->preOrderPrint(printAll);
+	if (this->right) this->right->preOrderPrint(printAll);
+}
+
+template <typename Type>
+void branch<Type>::postOrderPrint(const bool printAll)
+{
+	if (this->left) this->left->postOrderPrint(printAll);
+	if (this->right) this->right->postOrderPrint(printAll);
+	printAll ? this->print() : cout << this->data << " ";
+}
+
+template <typename Type>
+void branch<Type>::inOrderPrint(const bool printAll)
+{
+	if (this->left) this->left->inOrderPrint(printAll);
+	printAll ? this->print() : cout << this->data << " ";
+	if (this->right)  this->right->inOrderPrint(printAll);
 }
 
 template <typename Type>
 class AdvBranch : public branch<Type>
 {
 protected:
-	int heightBalance;
+	long heightBalance;
 	AdvBranch<Type> *parent;
 public:
 	AdvBranch() {
@@ -127,10 +160,10 @@ public:
 		cout << "Left  : " << this->left  << "\n\t";
 		cout << "Right : " << this->right << "\n";
 	}
-	int updateHeight() {
-		int l = this->left  ? this->left->updateHeight()  : 0;
-		int r = this->right ? this->right->updateHeight() : 0;
-		this->heightBalance = l - r;
+	size_t updateHeight() {
+		size_t l = this->left  ? this->left->updateHeight()  : 0;
+		size_t r = this->right ? this->right->updateHeight() : 0;
+		this->heightBalance = (long)l - (long)r;
 		this->height        = 1 + max(l, r);
 		return this->height;
 	}

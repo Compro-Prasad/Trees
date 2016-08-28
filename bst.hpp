@@ -6,14 +6,31 @@ class BinarySearchTree : public tree<Type>
 public:
 	BinarySearchTree() : tree<Type>() { }
 	BinarySearchTree(branch<Type> *root) : tree<Type>(root) { }
+	~BinarySearchTree();
 
 	void add(Type e);
+	void add(Type a[], size_t size);
 	void remove(Type e);
+	void remove(Type a[], size_t size);
 	bool check(Type e);
-	void print() {
-		if (this->root) this->root->inOrderPrint();
+	void putInArrayInInc(Type A[], size_t &size);
+	void putInArrayInDec(Type A[], size_t &size);
+	void print(bool printAll) {
+		if (this->root) this->root->inOrderPrint(printAll);
 	}
 };
+
+template <typename Type>
+void BinarySearchTree<Type>::putInArrayInInc(Type A[], size_t &size)
+{
+	this->root->putInArrayInInc(A, size);
+}
+
+template <typename Type>
+void BinarySearchTree<Type>::putInArrayInDec(Type A[], size_t &size)
+{
+	this->root->putInArrayInDec(A, size);
+}
 
 template <typename Type>
 void BinarySearchTree<Type>::add(Type e)
@@ -31,6 +48,18 @@ void BinarySearchTree<Type>::add(Type e)
 	*t = new branch<Type>(e);
 	if (this->autoUpdateHeight) this->root->updateHeight();
 }
+
+template <typename Type>
+void BinarySearchTree<Type>::add(Type a[], size_t size)
+{
+	bool autoUpdate = this->autoUpdateHeight;
+	this->autoUpdateHeight = false;
+	for (size_t i = 0; i < size; ++i)
+		this->add(a[i]);
+	this->autoUpdateHeight = autoUpdate;
+	if (this->autoUpdateHeight) this->root->updateHeight();
+}
+
 
 template <typename Type>
 void BinarySearchTree<Type>::remove(Type e)
@@ -64,6 +93,18 @@ void BinarySearchTree<Type>::remove(Type e)
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
 	cerr << "Error: Element not in the tree\n";
+}
+
+template <typename Type>
+BinarySearchTree<Type>::~BinarySearchTree()
+{
+	if (this->root)
+	{
+		if (this->root->left)  this->root->removeAll(&this->root->left);
+		if (this->root->right) this->root->removeAll(&this->root->right);
+		delete this->root;
+		this->root = NULL;
+	}
 }
 
 template <typename Type>

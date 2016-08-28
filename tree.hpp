@@ -4,10 +4,14 @@ template <typename Type>
 class tree
 {
 public:
-	static bool autoUpdateHeight;
+	bool autoUpdateHeight;
 	branch<Type> *root;
+	size_t rootHeight() {
+		return root->Height();
+	}
 	branch<Type> *Root() { return this->root; }
 	tree() {
+		autoUpdateHeight = true;
 		this->root = NULL;
 	}
 	tree(branch<Type> *root) {
@@ -19,6 +23,3 @@ public:
 		if (this->root) this->root->updateHeight();
 	}
 };
-
-template <typename Type>
-bool tree<Type>::autoUpdateHeight = true;
