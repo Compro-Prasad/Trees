@@ -26,8 +26,8 @@ void test(t a[], size_t size)
 
 	if (!memcmp(b, c, size * sizeof(t)) && size == s)
 	{
-		delete b;
-		delete c;
+		delete[]b;
+		delete[]c;
 		return;
 	}
 	else if (size != s)
@@ -41,8 +41,8 @@ void test(t a[], size_t size)
 		cout << "Tree sort   : ";
 		display(c, a + size);
 	}
-	delete b;
-	delete c;
+	delete[]b;
+	delete[]c;
 	exit(1);
 }
 
@@ -62,7 +62,7 @@ void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 
 int main()
 {
-	int a[] = {1};
+	int a[] = {1, 2, 3, 4, 5};
 	permute(a, 0, sizeof(a) / sizeof(int), test);
 	cout << "Tests Passed\n";
 	return 0;
