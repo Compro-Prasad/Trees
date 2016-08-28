@@ -78,24 +78,24 @@ public:
 	void preOrderPrint(const bool printAll);
 	void postOrderPrint(const bool printAll);
 	void inOrderPrint(const bool printAll);
-	void putInArrayInInc(Type A[], size_t &size);
-	void putInArrayInDec(Type A[], size_t &size);
+	void copyToArrIncOrder(Type A[], size_t &size);
+	void copyToArrDecOrder(Type A[], size_t &size);
 };
 
 template <typename Type>
-void branch<Type>::putInArrayInInc(Type A[], size_t &size)
+void branch<Type>::copyToArrIncOrder(Type A[], size_t &size)
 {
-	if (this->left) this->left->putInArrayInInc(A, size);
+	if (this->left) this->left->copyToArrIncOrder(A, size);
 	A[size++] = this->data;
-	if (this->right) this->right->putInArrayInInc(A, size);
+	if (this->right) this->right->copyToArrIncOrder(A, size);
 }
 
 template <typename Type>
-void branch<Type>::putInArrayInDec(Type A[], size_t &size)
+void branch<Type>::copyToArrDecOrder(Type A[], size_t &size)
 {
-	if (this->right) this->right->putInArrayInDec(A, size);
+	if (this->right) this->right->copyToArrDecOrder(A, size);
 	A[size++] = this->data;
-	if (this->left) this->left->putInArrayInDec(A, size);
+	if (this->left) this->left->copyToArrDecOrder(A, size);
 }
 
 template <typename Type>
