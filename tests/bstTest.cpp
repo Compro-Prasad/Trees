@@ -65,5 +65,11 @@ int main()
 	int a[] = {1, 2, 3, 4, 5};
 	permute(a, 0, sizeof(a) / sizeof(int), test);
 	cout << "Tests Passed\n";
+	cout << "Conclusions:\n";
+	cout << "      Things working properly:\n";
+	cout << "               BinarySearchTree::add(array, size)";
+	cout << "               BinarySearchTree::add(element)";
+	cout << "               BinarySearchTree::putInArrayInInc(arr, &size)";
+	cout << "               BinarySearchTree::~BinarySearchTree()";
 	return 0;
 }
