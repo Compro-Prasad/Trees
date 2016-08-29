@@ -74,28 +74,27 @@ public:
 			{
 			case 0:
 			case 1:
-				rotateClockwise(thisAddrPtr);
+				this->rotateClockwise(thisAddrPtr);
 				break;
 			case -1:
-				rotateAntiClockwise(&this->right);
-				rotateClockwise(thisAddrPtr);
+				this->left->rotateAntiClockwise(&this->left);
+				this->rotateClockwise(thisAddrPtr);
 			}
-			balanceHeight(thisAddrPtr);
-			return this->height;
+			return balanceHeight(thisAddrPtr);
 		}
 		else if ((long)l - (long)r == -2)
 		{
-			size_t rl = this->left->right ? this->left->right->height : 0;
-			size_t rr = this->left->left  ? this->left->left->height  : 0;
+			size_t rl = this->right->right ? this->right->right->height : 0;
+			size_t rr = this->right->left  ? this->right->left->height  : 0;
 			switch ((long)rl - (long)rr)
 			{
 			case 0:
 			case -1:
-				rotateAntiClockwise(thisAddrPtr);
+				this->rotateAntiClockwise(thisAddrPtr);
 				break;
 			case 1:
-				rotateClockwise(&this->left);
-				rotateAntiClockwise(thisAddrPtr);
+				this->right->rotateClockwise(&this->right);
+				this->rotateAntiClockwise(thisAddrPtr);
 			}
 			return balanceHeight(thisAddrPtr);
 		}
