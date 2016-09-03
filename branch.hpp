@@ -42,31 +42,19 @@ public:
 	void rotateAntiClockwise(branch<Type> **thisAddrPtr) {
 		if (*thisAddrPtr == this && this->right)
 		{
-#ifdef DEBUG
-				cout << "After rotating anti-clockwise about " << this->data << "\n";
-#endif
 			branch<Type> *k = this->right->left;
 			this->right->left = this;
 			*thisAddrPtr = this->right;
 			this->right = k;
-#ifdef DEBUG
-			this->display();
-#endif
 		}
 	}
 	void rotateClockwise(branch<Type> **thisAddrPtr) {
 		if (*thisAddrPtr == this && this->left)
 		{
-#ifdef DEBUG
-				cout << "After rotating clockwise about " << this->data << "\n";
-#endif
 			branch<Type> *k = this->left->right;
 			this->left->right = this;
 			*thisAddrPtr = this->left;
 			this->left = k;
-#ifdef DEBUG
-			this->display();
-#endif
 		}
 	}
 	size_t updateHeight() {
@@ -87,16 +75,10 @@ public:
 			case 0:
 			case 1:
 				this->rotateClockwise(thisAddrPtr);
-#ifdef DEBUG
-				cout << "\n";
-#endif
 				break;
 			case -1:
 				this->left->rotateAntiClockwise(&this->left);
 				this->rotateClockwise(thisAddrPtr);
-#ifdef DEBUG
-				cout << "\n";
-#endif
 			}
 			return (*thisAddrPtr)->updateHeight();
 		}
@@ -109,16 +91,10 @@ public:
 			case 0:
 			case -1:
 				this->rotateAntiClockwise(thisAddrPtr);
-#ifdef DEBUG
-				cout << "\n";
-#endif
 				break;
 			case 1:
 				this->right->rotateClockwise(&this->right);
 				this->rotateAntiClockwise(thisAddrPtr);
-#ifdef DEBUG
-				cout << "\n";
-#endif
 			}
 			return (*thisAddrPtr)->updateHeight();
 		}
@@ -140,7 +116,7 @@ public:
 		char b[20];
 		int width = 5;
 
-		sprintf(b, "(%01d:%01lu)", this->data, this->height);
+		sprintf(b, "%03d", this->data);
 
 		int left  = this->left  ? this->left->display_(1, offset, depth + 1, s) : 0;
 		int right = this->right ? this->right->display_(0, offset + left + width, depth + 1, s) : 0;
