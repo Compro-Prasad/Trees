@@ -57,6 +57,14 @@ void testRemove(t a[], size_t size)
 	copy(a, a + size, b);
 	sort(b, b + size);
 
+	tree.updateHeight();
+	if (tree.rootHeight() >= size - 3 && size > 2)
+	{
+		tree.display();
+		display(a, a + size);
+		exit(2);
+	}
+
 	tree.remove(b, size);
 
 	if (!tree.isEmpty())
@@ -88,7 +96,7 @@ void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 
 int main()
 {
-	int a[] = {1, 2, 3, 4, 5};
+	int a[] = {1, 2, 3, 4, 5, 6, 7};
 	permute(a, 0, sizeof(a) / sizeof(int), testAdd);
 	cout << "Tests Passed for inserting elements in BST\n";
 	cout << "Conclusions:\n";
@@ -98,6 +106,7 @@ int main()
 	cout << "               AVLtree::copyToArrIncOrder(arr, &size)\n";
 	cout << "               AVLtree::~AVLtree()\n";
 	permute(a, 0, sizeof(a) / sizeof(int), testRemove);
+	//testRemove(a, 4);
 	cout << "Tests Passed for removing elements from BST\n";
 	cout << "Conclusions:\n";
 	cout << "      Things working properly:\n";

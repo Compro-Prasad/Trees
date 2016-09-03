@@ -22,4 +22,7 @@ public:
 	void updateHeight() {
 		if (this->root) this->root->updateHeight();
 	}
+	void display() {
+		if (this->root) this->root->display();
+	}
 };

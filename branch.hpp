@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -26,7 +27,6 @@ public:
 		this->right = b.right;
 		this->left = b.left;
 		this->height = b.height;
-		this->heightBalance = b.heightBalance;
 	}
 	size_t Height() {
 		return this->height;
@@ -42,19 +42,31 @@ public:
 	void rotateAntiClockwise(branch<Type> **thisAddrPtr) {
 		if (*thisAddrPtr == this && this->right)
 		{
+#ifdef DEBUG
+				cout << "After rotating anti-clockwise about " << this->data << "\n";
+#endif
 			branch<Type> *k = this->right->left;
 			this->right->left = this;
 			*thisAddrPtr = this->right;
 			this->right = k;
+#ifdef DEBUG
+			this->display();
+#endif
 		}
 	}
 	void rotateClockwise(branch<Type> **thisAddrPtr) {
 		if (*thisAddrPtr == this && this->left)
 		{
+#ifdef DEBUG
+				cout << "After rotating clockwise about " << this->data << "\n";
+#endif
 			branch<Type> *k = this->left->right;
 			this->left->right = this;
 			*thisAddrPtr = this->left;
 			this->left = k;
+#ifdef DEBUG
+			this->display();
+#endif
 		}
 	}
 	size_t updateHeight() {
@@ -66,37 +78,49 @@ public:
 	size_t balanceHeight(branch<Type> **thisAddrPtr) {
 		size_t l = this->left  ? this->left->balanceHeight(&this->left)   : 0;
 		size_t r = this->right ? this->right->balanceHeight(&this->right) : 0;
-		if ((long)l - (long)r == 2)
+		if (((long)l - (long)r) > 1)
 		{
 			size_t ll = this->left->right ? this->left->right->height : 0;
 			size_t lr = this->left->left  ? this->left->left->height  : 0;
-			switch ((long)ll - (long)lr)
+			switch ((long)lr - (long)ll)
 			{
 			case 0:
 			case 1:
 				this->rotateClockwise(thisAddrPtr);
+#ifdef DEBUG
+				cout << "\n";
+#endif
 				break;
 			case -1:
 				this->left->rotateAntiClockwise(&this->left);
 				this->rotateClockwise(thisAddrPtr);
+#ifdef DEBUG
+				cout << "\n";
+#endif
 			}
-			return balanceHeight(thisAddrPtr);
+			return (*thisAddrPtr)->updateHeight();
 		}
-		else if ((long)l - (long)r == -2)
+		else if (((long)l - (long)r) < -1)
 		{
 			size_t rl = this->right->right ? this->right->right->height : 0;
 			size_t rr = this->right->left  ? this->right->left->height  : 0;
-			switch ((long)rl - (long)rr)
+			switch ((long)rr - (long)rl)
 			{
 			case 0:
 			case -1:
 				this->rotateAntiClockwise(thisAddrPtr);
+#ifdef DEBUG
+				cout << "\n";
+#endif
 				break;
 			case 1:
 				this->right->rotateClockwise(&this->right);
 				this->rotateAntiClockwise(thisAddrPtr);
+#ifdef DEBUG
+				cout << "\n";
+#endif
 			}
-			return balanceHeight(thisAddrPtr);
+			return (*thisAddrPtr)->updateHeight();
 		}
 		this->height = 1 + max(l, r);
 		return this->height;
@@ -111,6 +135,68 @@ public:
 		cout << "Left  : " << this->left  << "\n\t";
 		cout << "Right : " << this->right << "\n";
 		return 0;
+	}
+	int display_(int is_left, int offset, int depth, char s[20][255]) {
+		char b[20];
+		int width = 5;
+
+		sprintf(b, "(%01d:%01lu)", this->data, this->height);
+
+		int left  = this->left  ? this->left->display_(1, offset, depth + 1, s) : 0;
+		int right = this->right ? this->right->display_(0, offset + left + width, depth + 1, s) : 0;
+#define COMPACT
+#ifdef COMPACT
+		for (int i = 0; i < width; i++)
+			s[depth][offset + left + i] = b[i];
+
+		if (depth && is_left) {
+
+			for (int i = 0; i < width + right; i++)
+				s[depth - 1][offset + left + width/2 + i] = '-';
+
+			s[depth - 1][offset + left + width/2] = '.';
+
+		} else if (depth && !is_left) {
+
+			for (int i = 0; i < left + width; i++)
+				s[depth - 1][offset - width/2 + i] = '-';
+
+			s[depth - 1][offset + left + width/2] = '.';
+		}
+#else
+		for (int i = 0; i < width; i++)
+			s[2 * depth][offset + left + i] = b[i];
+
+		if (depth && is_left) {
+
+			for (int i = 0; i < width + right; i++)
+				s[2 * depth - 1][offset + left + width/2 + i] = '-';
+
+			s[2 * depth - 1][offset + left + width/2] = '+';
+			s[2 * depth - 1][offset + left + width + right + width/2] = '+';
+
+		} else if (depth && !is_left) {
+
+			for (int i = 0; i < left + width; i++)
+				s[2 * depth - 1][offset - width/2 + i] = '-';
+
+			s[2 * depth - 1][offset + left + width/2] = '+';
+			s[2 * depth - 1][offset - width/2 - 1] = '+';
+		}
+#endif
+
+		return left + width + right;
+	}
+
+	int display() {
+		char s[height][255];
+		for (int i = 0; i < height; i++)
+			sprintf(s[i], "%80s", " ");
+
+		this->display_(0, 0, 0, s);
+
+		for (int i = 0; i < height; i++)
+			printf("%s\n", s[i]);
 	}
 	void removeAll(branch<Type> **node);
 	void preOrderPrint(const bool printAll);
