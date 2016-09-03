@@ -3,6 +3,9 @@
 template <typename Type>
 class BinarySearchTree : public tree<Type>
 {
+protected:
+	bool _add_(Type e);
+	bool _remove_(Type e);
 public:
 	BinarySearchTree() : tree<Type>() { }
 	BinarySearchTree(branch<Type> *root) : tree<Type>(root) { }
@@ -39,19 +42,24 @@ void BinarySearchTree<Type>::copyToArrDecOrder(Type A[], size_t &size)
 }
 
 template <typename Type>
-void BinarySearchTree<Type>::add(Type e)
+bool BinarySearchTree<Type>::_add_(Type e)
 {
 	branch<Type> **t = &this->root;
 	while (*t)
 	{
 		if ((*t)->data == e)
-		{
-			cerr << "Error: Unable to add duplicate element\n";
-			return;
-		}
+			return 0;
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
 	*t = new branch<Type>(e);
+	return 1;
+}
+
+template <typename Type>
+void BinarySearchTree<Type>::add(Type e)
+{
+	if (!this->_add_(e))
+		cerr << "Error: Unable to add duplicate element [ " << e << " ]\n";
 	if (this->autoUpdateHeight && this->root)
 		this->root->updateHeight();
 }
@@ -59,17 +67,14 @@ void BinarySearchTree<Type>::add(Type e)
 template <typename Type>
 void BinarySearchTree<Type>::add(Type a[], size_t size)
 {
-	bool autoUpdate = this->autoUpdateHeight;
-	this->autoUpdateHeight = false;
 	for (size_t i = 0; i < size; ++i)
-		this->add(a[i]);
-	this->autoUpdateHeight = autoUpdate;
+		this->_add_(a[i]);
 	if (this->autoUpdateHeight && this->root)
 		this->root->updateHeight();
 }
 
 template <typename Type>
-void BinarySearchTree<Type>::remove(Type e)
+bool BinarySearchTree<Type>::_remove_(Type e)
 {
 	branch<Type> **t = &this->root;
 	while (*t)
@@ -93,23 +98,28 @@ void BinarySearchTree<Type>::remove(Type e)
 				*t = (*t)->right;
 			}
 			delete z;
-			if (this->autoUpdateHeight && this->root)
-				this->root->updateHeight();
-			return;
+			return 1;
 		}
 		t = (*t)->data > e ? &(*t)->left : &(*t)->right;
 	}
-	cerr << "Error: Element not in the tree\n";
+	return 0;
+}
+
+template <typename Type>
+void BinarySearchTree<Type>::remove(Type e)
+{
+	if (!this->_remove_(e))
+		cerr << "Error: Unable to find [ " << e << " ]\n";
+	if (this->autoUpdateHeight && this->root)
+		this->root->updateHeight();
 }
 
 template <typename Type>
 void BinarySearchTree<Type>::remove(Type a[], size_t size)
 {
-	bool autoUpdate = this->autoUpdateHeight;
-	this->autoUpdateHeight = false;
 	for (size_t i = 0; i < size; ++i)
-		this->remove(a[i]);
-	this->autoUpdateHeight = autoUpdate;
+		if (!this->_remove_(a[i]))
+			cerr << "Error: Unable to find [ " << a[i] << " ]\n";
 	if (this->autoUpdateHeight && this->root)
 		this->root->updateHeight();
 }
