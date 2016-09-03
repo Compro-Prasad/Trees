@@ -27,13 +27,8 @@ void AVLtree<Type>::add(Type e)
 template <typename Type>
 void AVLtree<Type>::add(Type a[], size_t size)
 {
-	bool autoUpdate = this->autoUpdateHeight;
-	this->autoUpdateHeight = false;
 	for (size_t i = 0; i < size; ++i)
-		this->add(a[i]);
-	this->autoUpdateHeight = autoUpdate;
-	if (this->autoUpdateHeight && this->root)
-		this->root->balanceHeight(&this->root);
+		AVLtree<Type>::add(a[i]);
 }
 
 template <typename Type>
