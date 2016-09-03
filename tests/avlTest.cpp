@@ -38,8 +38,8 @@ void testAdd(t a[], size_t size)
 		display(a, a + size);
 		cout << "Sorted Array: ";
 		display(b, a + size);
-		cout << "Tree sort   : ";
-		display(c, a + size);
+		cout << "Tree        :\n";
+		tree.display();
 	}
 	delete[]b;
 	delete[]c;
@@ -66,7 +66,7 @@ void testRemove(t a[], size_t size)
 		display(a, a + size);
 		cout << "Sorted Array: ";
 		display(b, b + size);
-		cout << "Tree :\n";
+		cout << "Tree        :\n";
 		tree.display();
 		exit(2);
 	}

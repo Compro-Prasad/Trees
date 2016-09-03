@@ -17,38 +17,37 @@ public:
 template <typename Type>
 void AVLtree<Type>::add(Type e)
 {
-	bool autoUpdate = this->autoUpdateHeight;
-	this->autoUpdateHeight = false;
-	BinarySearchTree<Type>::add(e);
-	this->autoUpdateHeight = autoUpdate;
-	if (this->autoUpdateHeight && this->root) this->root->balanceHeight(&this->root);
+	if (BinarySearchTree<Type>::_add_(e))
+		this->root->balanceHeight(&this->root);
+	else
+		cerr << "Error: Unable to add duplicate element [ " << e << " ]\n";
 }
 
 template <typename Type>
 void AVLtree<Type>::add(Type a[], size_t size)
 {
 	for (size_t i = 0; i < size; ++i)
-		AVLtree<Type>::add(a[i]);
+		if (BinarySearchTree<Type>::_add_(a[i]))
+			this->root->balanceHeight(&this->root);
+		else
+			cerr << "Error: Unable to add duplicate element [ " << a[i] << " ]\n";
 }
 
 template <typename Type>
 void AVLtree<Type>::remove(Type e)
 {
-	bool autoUpdate = this->autoUpdateHeight;
-	this->autoUpdateHeight = false;
-	BinarySearchTree<Type>::remove(e);
-	this->autoUpdateHeight = autoUpdate;
-	if (this->autoUpdateHeight && this->root) this->root->balanceHeight(&this->root);
+	if (BinarySearchTree<Type>::_remove_(e))
+		this->root ? this->root->balanceHeight(&this->root) : 0;
+	else
+		cerr << "Error: Unable to find [ " << e << " ]\n";
 }
 
 template <typename Type>
 void AVLtree<Type>::remove(Type a[], size_t size)
 {
-	bool autoUpdate = this->autoUpdateHeight;
-	this->autoUpdateHeight = false;
 	for (size_t i = 0; i < size; ++i)
-		this->remove(a[i]);
-	this->autoUpdateHeight = autoUpdate;
-	if (this->autoUpdateHeight && this->root)
-		this->root->balanceHeight(&this->root);
+		if (BinarySearchTree<Type>::_remove_(a[i]))
+			this->root ? this->root->balanceHeight(&this->root) : 0;
+		else
+			cerr << "Error: Unable to find [ " << a[i] << " ]\n";
 }
