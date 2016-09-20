@@ -1,20 +1,21 @@
-#include "branch.hpp"
+#ifndef TREE_HPP
+#define TREE_HPP
+
+#include "Branch.hpp"
 
 template <typename Type>
-class tree
+class Tree
 {
 public:
-	bool autoUpdateHeight;
-	branch<Type> *root;
+	Branch<Type> *root;
 	size_t rootHeight() {
 		return this->root ? this->root->Height() : 0;
 	}
-	branch<Type> *Root() { return this->root; }
-	tree() {
-		autoUpdateHeight = true;
+	Branch<Type> *Root() { return this->root; }
+	Tree() {
 		this->root = NULL;
 	}
-	tree(branch<Type> *root) {
+	Tree(Branch<Type> *root) {
 		this->root = root;
 		if (this->autoUpdateHeight && this->root) root->updateHeight();
 	}
@@ -26,3 +27,5 @@ public:
 		if (this->root) this->root->display();
 	}
 };
+
+#endif

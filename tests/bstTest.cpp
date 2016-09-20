@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include "../bst.hpp"
 
+using namespace std;
+
 template <typename t>
 void display(t *start, const t *end, string sep = " ")
 {
@@ -37,9 +39,9 @@ void testAdd(t a[], size_t size)
 		cout << "Permutation : ";
 		display(a, a + size);
 		cout << "Sorted Array: ";
-		display(b, a + size);
+		display(b, b + size);
 		cout << "Tree sort   : ";
-		display(c, a + size);
+		display(c, c + size);
 	}
 	delete[]b;
 	delete[]c;
@@ -67,7 +69,7 @@ void testRemove(t a[], size_t size)
 		cout << "Sorted Array: ";
 		display(b, b + size);
 		cout << "Tree values : ";
-		tree.print(false);
+		tree.print();
 		exit(2);
 	}
 }
