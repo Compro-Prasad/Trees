@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <string.h>
 #include <unistd.h>
-#include "../avl.hpp"
+#include "../AVLtree.hpp"
+
+using namespace std;
 
 template <typename t>
 void display(t *start, const t *end, string sep = " ")
@@ -45,7 +47,7 @@ void testAdd(t a[], size_t size)
 	delete[]c;
 	exit(1);
 }
-
+/*
 template<typename t>
 void testRemove(t a[], size_t size)
 {
@@ -70,13 +72,16 @@ void testRemove(t a[], size_t size)
 		tree.display();
 		exit(2);
 	}
-}
+	}*/
 
 template <typename t>
 void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 {
 	if (k == size - 1)
+	{
 		func(a, size);
+		cout << "Test passed\n";
+	}
 	else
 		for (size_t i = k; i < size; ++i)
 		{
@@ -96,7 +101,7 @@ int main()
 	cout << "               AVLtree::add(array, size)\n";
 	cout << "               AVLtree::add(element)\n";
 	cout << "               AVLtree::copyToArrIncOrder(arr, &size)\n";
-	cout << "               AVLtree::~AVLtree()\n";
+	cout << "               AVLtree::~AVLtree()\n";/*
 	permute(a, 0, sizeof(a) / sizeof(int), testRemove);
 	//testRemove(a, 4);
 	cout << "Tests Passed for removing elements from BST\n";
@@ -104,6 +109,6 @@ int main()
 	cout << "      Things working properly:\n";
 	cout << "               AVLtree::remove(array, size)\n";
 	cout << "               AVLtree::remove(element)\n";
-	cout << "               tree::isEmpty()\n";
+	cout << "               tree::isEmpty()\n";*/
 	return 0;
 }

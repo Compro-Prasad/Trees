@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <string.h>
 #include <unistd.h>
-#include "../bst.hpp"
+#include "../../bst.hpp"
 
 using namespace std;
 
