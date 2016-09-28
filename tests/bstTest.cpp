@@ -1,7 +1,8 @@
 #include <algorithm>
 #include <string.h>
 #include <unistd.h>
-#include "../../bst.hpp"
+#include "../bstBranch.hpp"
+#include "../tree.hpp"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ void display(t *start, const t *end, string sep = " ")
 template <typename t>
 void testAdd(t a[], size_t size)
 {
-	BinarySearchTree<t> tree;
+	tree<bstBranch<t>, t> tree;
 	t *b = new t[size], *c = new t[size];
 	size_t s = 0;
 
@@ -51,7 +52,7 @@ void testAdd(t a[], size_t size)
 template<typename t>
 void testRemove(t a[], size_t size)
 {
-	BinarySearchTree<t> tree;
+	tree<bstBranch<t>, t> tree;
 	t *b = new t[size];
 
 	tree.add(a, size);

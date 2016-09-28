@@ -78,10 +78,7 @@ template <typename t>
 void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 {
 	if (k == size - 1)
-	{
 		func(a, size);
-		cout << "Test passed\n";
-	}
 	else
 		for (size_t i = k; i < size; ++i)
 		{
@@ -95,7 +92,7 @@ int main()
 {
 	int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 	permute(a, 0, sizeof(a) / sizeof(int), testAdd);
-	cout << "Tests Passed for inserting elements in BST\n";
+	cout << "Tests Passed for inserting elements in AVL Tree\n";
 	cout << "Conclusions:\n";
 	cout << "      Things working properly:\n";
 	cout << "               AVLtree::add(array, size)\n";

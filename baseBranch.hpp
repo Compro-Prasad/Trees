@@ -1,33 +1,35 @@
-#ifndef BRANCH_HPP
-#define BRANCH_HPP
+#ifndef BASEBRANCH_HPP
+#define BASEBRANCH_HPP
 
 #include <iostream>
 #include <string>
 #include <stdio.h>
 
 template <typename Type>
-class Branch
+class baseBranch
 {
-public:
+protected:
 	Type data;
-	Branch<Type> *right;
-	Branch<Type> *left;
-
-	Branch() {
+	baseBranch<Type> *right;
+	baseBranch<Type> *left;
+public:
+	baseBranch() {
 		this->data = 0;
 		this->right = this->left = NULL;
 	}
-	Branch(Type e) {
+	baseBranch(Type e) {
 		this->data = e;
 		this->right = this->left = NULL;
 	}
-	Branch(const Branch &b) {
+	baseBranch(const baseBranch &b) {
 		this->data = b.data;
 		this->right = b.right;
 		this->left = b.left;
 	}
 
-	void operator=(const Branch &b) {
+	Type Data() const { return this->data; }
+
+	void operator=(const baseBranch &b) {
 		this->data = b.data;
 		this->right = b.right;
 		this->left = b.left;
@@ -37,54 +39,54 @@ public:
 		this->data = t;
 	}
 
-	void rotateAntiClockwise(Branch<Type> **thisAddrPtr) {
+	void rotateAntiClockwise(baseBranch<Type> **thisAddrPtr) {
 #ifdef TESTING
 		if (*thisAddrPtr != this || not this->right)
 			throw "Wrong node selected for rotating anti clockwise";
 #endif
-		Branch<Type> *k = this->right->left;
+		baseBranch<Type> *k = this->right->left;
 		this->right->left = this;
 		*thisAddrPtr = this->right;
 		this->right = k;
 	}
-	void rotateClockwise(Branch<Type> **thisAddrPtr) {
+	void rotateClockwise(baseBranch<Type> **thisAddrPtr) {
 #ifdef TESTING
 		if (*thisAddrPtr != this || not this->left)
 			throw "Wrong node selected for rotating anti clockwise";
 #endif
-		Branch<Type> *k = this->left->right;
+		baseBranch<Type> *k = this->left->right;
 		this->left->right = this;
 		*thisAddrPtr = this->left;
 		this->left = k;
 	}
 
-	bool isLeaf()            { return !this->right && !this->left; }
-	bool isOnlyRightLinked() { return this->right  && !this->left; }
-	bool isOnlyLeftLinked()  { return !this->right && this->left;  }
-	bool isRightLinked()     { return this->right; }
-	bool isLeftLinked()      { return this->left;  }
+	bool isLeaf() const            { return !this->right && !this->left; }
+	bool isOnlyRightLinked() const { return this->right  && !this->left; }
+	bool isOnlyLeftLinked() const  { return !this->right && this->left;  }
+	bool isRightLinked() const     { return this->right; }
+	bool isLeftLinked() const      { return this->left;  }
 
-	void printAll() {
+	void printAll() const {
 		std::cout << this->data << " : " << this << "\n\t";
 		std::cout << "Left  : " << this->left  << "\n\t";
 		std::cout << "Right : " << this->right << "\n";
 	}
-	void print() {
+	void print() const {
 		std::cout << this->data;
 	}
-	void print(std::string s) {
+	void print(std::string s) const {
 		std::cout << this->data << s;
 	}
-	void print_() {
+	void print_() const {
 		std::cout << this->data << " ";
 	}
-	void println() {
+	void println() const {
 		this->print("\n");
 	}
-	int display_(int is_left, int offset, int depth, char s[50][255]);
-	void display();
+	int display_(int is_left, int offset, int depth, char s[50][255]) const ;
+	void display() const ;
 
-	void removeAll(Branch<Type> **node);
+	void removeAll(baseBranch<Type> **node);
 
 	void preOrder  (void func(void)) const;
 	void postOrder (void func(void)) const;
@@ -96,12 +98,12 @@ public:
 	void inOrderInc(void func(const Type), const Type) const;
 	void inOrderDec(void func(const Type), const Type) const;
 
-	void copyToArrIncOrder(Type [], size_t &);
-	void copyToArrDecOrder(Type [], size_t &);
+	void copyToArrIncOrder(Type [], size_t &) const;
+	void copyToArrDecOrder(Type [], size_t &) const;
 };
 
 template <typename Type>
-void Branch<Type>::copyToArrIncOrder(Type A[], size_t &s)
+void baseBranch<Type>::copyToArrIncOrder(Type A[], size_t &s) const
 {
 	if (this->left)  this->left->copyToArrIncOrder(A, s);
 	A[s++] = this->data;
@@ -109,7 +111,7 @@ void Branch<Type>::copyToArrIncOrder(Type A[], size_t &s)
 }
 
 template <typename Type>
-void Branch<Type>::copyToArrDecOrder(Type A[], size_t &size)
+void baseBranch<Type>::copyToArrDecOrder(Type A[], size_t &size) const
 {
 	if (this->right) this->right->copyToArrDecOrder(A, size);
 	A[size++] = this->data;
@@ -117,20 +119,20 @@ void Branch<Type>::copyToArrDecOrder(Type A[], size_t &size)
 }
 
 template <typename Type>
-void Branch<Type>::removeAll(Branch<Type> **node)
+void baseBranch<Type>::removeAll(baseBranch<Type> **node)
 {
-	if (*node)
-	{
-		(*node)->removeAll(&(*node)->left);
-		(*node)->removeAll(&(*node)->right);
-		Branch<Type> *z = *node;
-		*node = NULL;
-		delete z;
-	}
+#ifdef TESTING
+	if (*node != this)
+		throw "Bad memory location";
+#endif // TESTING
+	if (this->left)  this->left->removeAll(&this->left);
+	if (this->right) this->right->removeAll(&this->right);
+	delete *node;
+	*node = NULL;
 }
 
 template <typename Type>
-void Branch<Type>::preOrder(void func(void)) const
+void baseBranch<Type>::preOrder(void func(void)) const
 {
 	func();
 	if (this->left)  this->left->preOrder(func);
@@ -138,7 +140,7 @@ void Branch<Type>::preOrder(void func(void)) const
 }
 
 template <typename Type>
-void Branch<Type>::postOrder(void func(void)) const
+void baseBranch<Type>::postOrder(void func(void)) const
 {
 	if (this->left) this->left->postOrder(func);
 	if (this->right) this->right->postOrder(func);
@@ -146,7 +148,7 @@ void Branch<Type>::postOrder(void func(void)) const
 }
 
 template <typename Type>
-void Branch<Type>::inOrderInc(void func(void)) const
+void baseBranch<Type>::inOrderInc(void func(void)) const
 {
 	if (this->left) this->left->inOrderInc(func);
 	func();
@@ -154,7 +156,7 @@ void Branch<Type>::inOrderInc(void func(void)) const
 }
 
 template <typename Type>
-void Branch<Type>::inOrderDec(void func(void)) const
+void baseBranch<Type>::inOrderDec(void func(void)) const
 {
 	if (this->right) this->right->inOrderDec(func);
 	func();
@@ -162,7 +164,7 @@ void Branch<Type>::inOrderDec(void func(void)) const
 }
 
 template <typename Type>
-void Branch<Type>::preOrder(void func(const Type), const Type x) const
+void baseBranch<Type>::preOrder(void func(const Type), const Type x) const
 {
 	func(x);
 	if (this->left)  this->left->preOrder(func, x);
@@ -170,7 +172,7 @@ void Branch<Type>::preOrder(void func(const Type), const Type x) const
 }
 
 template <typename Type>
-void Branch<Type>::postOrder(void func(const Type), const Type x) const
+void baseBranch<Type>::postOrder(void func(const Type), const Type x) const
 {
 	if (this->left) this->left->postOrder(func, x);
 	if (this->right) this->right->postOrder(func, x);
@@ -178,7 +180,7 @@ void Branch<Type>::postOrder(void func(const Type), const Type x) const
 }
 
 template <typename Type>
-void Branch<Type>::inOrderInc(void func(const Type), const Type x) const
+void baseBranch<Type>::inOrderInc(void func(const Type), const Type x) const
 {
 	if (this->left) this->left->inOrderInc(func, x);
 	func(x);
@@ -186,7 +188,7 @@ void Branch<Type>::inOrderInc(void func(const Type), const Type x) const
 }
 
 template <typename Type>
-void Branch<Type>::inOrderDec(void func(const Type), const Type x) const
+void baseBranch<Type>::inOrderDec(void func(const Type), const Type x) const
 {
 	if (this->right) this->right->inOrderDec(func, x);
 	func(x);
@@ -194,7 +196,7 @@ void Branch<Type>::inOrderDec(void func(const Type), const Type x) const
 }
 
 template <typename Type>
-int Branch<Type>::display_(int is_left, int offset, int depth, char s[50][255]) {
+int baseBranch<Type>::display_(int is_left, int offset, int depth, char s[50][255]) const {
 	char b[20];
 	int width = 5;
 
@@ -247,7 +249,7 @@ int Branch<Type>::display_(int is_left, int offset, int depth, char s[50][255]) 
 }
 
 template <typename Type>
-void Branch<Type>::display() {
+void baseBranch<Type>::display() const {
 	char s[50][255];
 	for (int i = 0; i < 50; i++)
 		sprintf(s[i], "%80s", " ");
