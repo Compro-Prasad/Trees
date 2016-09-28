@@ -21,48 +21,20 @@ public:
 		if (*thisAddrPtr != this || not this || not this->right)
 			throw "Wrong node selected for rotating anti clockwise";
 #endif
-#ifdef DEBUG
-		printf("\nRotating Anti Clockwise:\n\tBefore:\n");
-		printf("\t\tPivot    : %p(%d)\n", *thisAddrPtr, (*thisAddrPtr)->data);
-		printf("\t\tLeft     : %p\n", (*thisAddrPtr)->left);
-		printf("\t\tRight    : %p(%d)\n", (*thisAddrPtr)->right, (*thisAddrPtr)->right->data);
-		printf("\t\tRleft    : %p\n", (*thisAddrPtr)->right->left);
-#endif // DEBUG
 		AVLbranch<Type> *k = (AVLbranch<Type> *)this->right->left;
 		this->right->left = this;
 		*thisAddrPtr = (AVLbranch<Type> *)this->right;
 		this->right = k;
-#ifdef DEBUG
-		printf("\tAfter:\n");
-		printf("\t\tPivot    : %p(%d)\n", *thisAddrPtr, (*thisAddrPtr)->data);
-		printf("\t\tLeft     : %p(%d)\n", (*thisAddrPtr)->left, (*thisAddrPtr)->left->data);
-		printf("\t\tRight    : %p\n", (*thisAddrPtr)->right);
-		printf("\t\tLright    : %p\n\n", (*thisAddrPtr)->left->right);
-#endif // DEBUG
 	}
 	void rotateClockwise(AVLbranch<Type> **thisAddrPtr) {
 #ifdef TESTING
 		if (*thisAddrPtr != this|| not this || not this->left)
 			throw "Wrong node selected for rotating anti clockwise";
 #endif
-#ifdef DEBUG
-		printf("\nRotating Clockwise:\n\tBefore:\n");
-		printf("\tPivot    : %p(%d)\n", *thisAddrPtr, (*thisAddrPtr)->data);
-		printf("\tLeft     : %p(%d)\n", (*thisAddrPtr)->left, (*thisAddrPtr)->left->data);
-		printf("\tRight    : %p\n", (*thisAddrPtr)->right);
-		printf("\tLright   : %p\n", (*thisAddrPtr)->left->right);
-#endif // DEBUG
 		AVLbranch<Type> *k = (AVLbranch<Type> *)this->left->right;
 		this->left->right = this;
 		*thisAddrPtr = (AVLbranch<Type> *)this->left;
 		this->left = k;
-#ifdef DEBUG
-		printf("\tAfter:\n");
-		printf("\t\tPivot    : %p(%d)\n", *thisAddrPtr, (*thisAddrPtr)->data);
-		printf("\t\tLeft     : %p\n", (*thisAddrPtr)->left);
-		printf("\t\tRight    : %p(%d)\n", (*thisAddrPtr)->right, (*thisAddrPtr)->right->data);
-		printf("\t\tRleft    : %p\n", (*thisAddrPtr)->right->left);
-#endif // DEBUG
 	}
 	bool insert(AVLbranch<Type> **, AVLbranch<Type> *);
 };
@@ -70,7 +42,6 @@ public:
 template <typename Type>
 bool AVLbranch<Type>::insert(AVLbranch<Type> **root, AVLbranch<Type> *newBranch)
 {
-	printf("\nEntering insert() with (*root)->data = %d and newData=%d\n", (*root)->data, newBranch->data);
 #ifdef TESTING
 	if (*root != this)
 		throw "Error: Addresses don't match";
@@ -81,7 +52,6 @@ bool AVLbranch<Type>::insert(AVLbranch<Type> **root, AVLbranch<Type> *newBranch)
 		{
 			if (((AVLbranch<Type> *)this->left)->insert((AVLbranch<Type> **)&this->left, newBranch))
 			{
-				printf("\nBalance height of %d is %d\n", this->data, ++this->heightBalance);
 				switch (this->heightBalance)
 				{
 				case 0:
@@ -109,7 +79,6 @@ bool AVLbranch<Type>::insert(AVLbranch<Type> **root, AVLbranch<Type> *newBranch)
 		}
 		else
 		{
-			printf("\nBalance height of %d is %d\n", this->data, ++this->heightBalance);
 			this->left = newBranch;
 			return 1;
 		}
@@ -120,7 +89,6 @@ bool AVLbranch<Type>::insert(AVLbranch<Type> **root, AVLbranch<Type> *newBranch)
 		{
 			if (((AVLbranch<Type> *)this->right)->insert((AVLbranch<Type> **)&this->right, newBranch))
 			{
-				printf("\nBalance height of %d is %d\n", this->data, --this->heightBalance);
 				switch (this->heightBalance)
 				{
 				case 0:
@@ -136,7 +104,7 @@ bool AVLbranch<Type>::insert(AVLbranch<Type> **root, AVLbranch<Type> *newBranch)
 							((AVLbranch<Type> *)(*root)->left)->heightBalance = 0;
 						break;
 					case +1:  /* Double Rotation */
-						((AVLbranch<Type> *)this->right)->rotateClockwise((AVLbranch<Type> **)&this->left);
+						((AVLbranch<Type> *)this->right)->rotateClockwise((AVLbranch<Type> **)&this->right);
 						// this->left->heightBalance = 1;
 						((AVLbranch<Type> *)this->right->right)->heightBalance = 1;
 						AVLbranch<Type>::rotateAntiClockwise(root);
@@ -148,7 +116,6 @@ bool AVLbranch<Type>::insert(AVLbranch<Type> **root, AVLbranch<Type> *newBranch)
 		}
 		else
 		{
-			printf("\nBalance height of %d is %d\n", this->data, --this->heightBalance);
 			this->right = newBranch;
 			return 1;
 		}
