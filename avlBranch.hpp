@@ -65,7 +65,6 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 					break;
 				case -1:  /* Double Rotation */
 					((avlBranch<Type> *)this->left)->rotateAntiClockwise((baseBranch<Type> **)&this->left);
-					// this->left->heightBalance = 1;
 					((avlBranch<Type> *)((avlBranch<Type> *)this->left)->left)->heightBalance = 1;
 					this->rotateClockwise((baseBranch<Type> **)root);
 					((avlBranch<Type> *)(*root))->heightBalance = 0;
@@ -94,7 +93,6 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 					break;
 				case +1:  /* Double Rotation */
 					((avlBranch<Type> *)this->right)->rotateClockwise((baseBranch<Type> **)&this->right);
-					// this->left->heightBalance = 1;
 					((avlBranch<Type> *)((avlBranch<Type> *)this->right)->right)->heightBalance = 1;
 					this->rotateAntiClockwise((baseBranch<Type> **)root);
 					((avlBranch<Type> *)(*root))->heightBalance = 0;
