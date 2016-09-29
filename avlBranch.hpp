@@ -49,7 +49,7 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 	{
 		if (((avlBranch<Type> *)this->left)->add((avlBranch<Type> **)&this->left, e))
 		{
-			switch (this->heightBalance)
+			switch (++this->heightBalance)
 			{
 			case 0:
 				return 0;
@@ -78,7 +78,7 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 	{
 		if (((avlBranch<Type> *)this->right)->add((avlBranch<Type> **)&this->right, e))
 		{
-			switch (this->heightBalance)
+			switch (--this->heightBalance)
 			{
 			case 0:
 				return 0;
