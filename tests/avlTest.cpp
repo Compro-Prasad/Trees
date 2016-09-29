@@ -1,7 +1,8 @@
 #include <algorithm>
 #include <string.h>
 #include <unistd.h>
-#include "../AVLtree.hpp"
+#include "../tree.hpp"
+#include "../avlBranch.hpp"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ void display(t *start, const t *end, string sep = " ")
 template <typename t>
 void testAdd(t a[], size_t size)
 {
-	AVLtree<t> tree;
+	tree<avlBranch<t>, t> tree;
 	t *b = new t[size], *c = new t[size];
 	size_t s = 0;
 
