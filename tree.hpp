@@ -1,6 +1,8 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
+#include <iostream>
+
 template <typename type>
 void print_(type x)
 {
@@ -107,7 +109,7 @@ template <typename node, typename type>
 tree<node, type>::~tree()
 {
 	if (this->root)
-		this->root->removeAll((baseBranch<type> **)&this->root);
+		this->root->removeAll(&this->root);
 }
 
 template <typename node, typename type>

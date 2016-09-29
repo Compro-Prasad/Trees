@@ -96,16 +96,16 @@ int main()
 	cout << "Tests Passed for inserting elements in BST\n";
 	cout << "Conclusions:\n";
 	cout << "      Things working properly:\n";
-	cout << "               BinarySearchTree::add(array, size)\n";
-	cout << "               BinarySearchTree::add(element)\n";
-	cout << "               BinarySearchTree::copyToArrIncOrder(arr, &size)\n";
-	cout << "               BinarySearchTree::~BinarySearchTree()\n";
+	cout << "               bstBranch::add(array, size)\n";
+	cout << "               bstBranch::add(element)\n";
+	cout << "               bstBranch::copyToArrIncOrder(arr, &size)\n";
+	cout << "               bstBranch::~BinarySearchTree()\n";
 	permute(a, 0, sizeof(a) / sizeof(int), testRemove);
 	cout << "Tests Passed for removing elements from BST\n";
 	cout << "Conclusions:\n";
 	cout << "      Things working properly:\n";
-	cout << "               BinarySearchTree::remove(array, size)\n";
-	cout << "               BinarySearchTree::remove(element)\n";
+	cout << "               bstBranch::remove(array, size)\n";
+	cout << "               bstBranch::remove(element)\n";
 	cout << "               tree::isEmpty()\n";
 	return 0;
 }
