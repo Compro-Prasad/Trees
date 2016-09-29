@@ -17,6 +17,8 @@ public:
 		this->left  = b.left;
 	}
 
+	void removeAll(bstBranch<Type> **node);
+
 	void operator=(const bstBranch &b) {
 		this->data  = b.data;
 		this->right = b.right;
@@ -29,6 +31,19 @@ public:
 	void add(bstBranch<Type> **, Type);
 	bool remove(bstBranch<Type> **, Type);
 };
+
+template <typename Type>
+void bstBranch<Type>::removeAll(bstBranch<Type> **node)
+{
+#ifdef TESTING
+	if (*node != this)
+		throw "Bad memory location";
+#endif // TESTING
+	if (this->left)  ((bstBranch<Type> *)this->left)->removeAll((bstBranch<Type> **)&this->left);
+	if (this->right) ((bstBranch<Type> *)this->right)->removeAll((bstBranch<Type> **)&this->right);
+	delete *node;
+	*node = NULL;
+}
 
 template <typename Type>
 void bstBranch<Type>::add(bstBranch<Type> **root, Type e)

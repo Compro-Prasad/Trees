@@ -86,8 +86,6 @@ public:
 	int display_(int is_left, int offset, int depth, char s[50][255]) const ;
 	void display() const ;
 
-	void removeAll(baseBranch<Type> **node);
-
 	void preOrder  (void func(void)) const;
 	void postOrder (void func(void)) const;
 	void inOrderInc(void func(void)) const;
@@ -116,19 +114,6 @@ void baseBranch<Type>::copyToArrDecOrder(Type A[], size_t &size) const
 	if (this->right) this->right->copyToArrDecOrder(A, size);
 	A[size++] = this->data;
 	if (this->left) this->left->copyToArrDecOrder(A, size);
-}
-
-template <typename Type>
-void baseBranch<Type>::removeAll(baseBranch<Type> **node)
-{
-#ifdef TESTING
-	if (*node != this)
-		throw "Bad memory location";
-#endif // TESTING
-	if (this->left)  this->left->removeAll(&this->left);
-	if (this->right) this->right->removeAll(&this->right);
-	delete *node;
-	*node = NULL;
 }
 
 template <typename Type>
