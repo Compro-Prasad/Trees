@@ -48,17 +48,19 @@ void testAdd(t a[], size_t size)
 	delete[]c;
 	exit(1);
 }
-/*
+
 template<typename t>
 void testRemove(t a[], size_t size)
 {
-	AVLtree<t> tree;
+	tree<avlBranch<t>, t> tree;
 	t *b = new t[size];
 
 	tree.add(a, size);
+	tree.display();
 
 	copy(a, a + size, b);
 	sort(b, b + size);
+	display(b, b + size);
 
 	tree.remove(b, size);
 
@@ -73,7 +75,7 @@ void testRemove(t a[], size_t size)
 		tree.display();
 		exit(2);
 	}
-	}*/
+}
 
 template <typename t>
 void permute(t a[], size_t k, size_t size, void func(t [], size_t))
@@ -91,7 +93,7 @@ void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 
 int main()
 {
-	int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	int a[] = {1, 2, 3, 4, 5, 6, 7};
 	permute(a, 0, sizeof(a) / sizeof(int), testAdd);
 	cout << "Tests Passed for inserting elements in AVL Tree\n";
 	cout << "Conclusions:\n";
@@ -99,14 +101,13 @@ int main()
 	cout << "               AVLtree::add(array, size)\n";
 	cout << "               AVLtree::add(element)\n";
 	cout << "               AVLtree::copyToArrIncOrder(arr, &size)\n";
-	cout << "               AVLtree::~AVLtree()\n";/*
+	cout << "               AVLtree::~AVLtree()\n";
 	permute(a, 0, sizeof(a) / sizeof(int), testRemove);
-	//testRemove(a, 4);
 	cout << "Tests Passed for removing elements from BST\n";
 	cout << "Conclusions:\n";
 	cout << "      Things working properly:\n";
 	cout << "               AVLtree::remove(array, size)\n";
 	cout << "               AVLtree::remove(element)\n";
-	cout << "               tree::isEmpty()\n";*/
+	cout << "               tree::isEmpty()\n";
 	return 0;
 }

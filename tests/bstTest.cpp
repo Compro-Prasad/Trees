@@ -91,7 +91,7 @@ void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 
 int main()
 {
-	int a[] = {1, 2, 3, 4, 5};
+	int a[] = {1, 2, 3, 4, 5, 6, 7};
 	permute(a, 0, sizeof(a) / sizeof(int), testAdd);
 	cout << "Tests Passed for inserting elements in BST\n";
 	cout << "Conclusions:\n";
