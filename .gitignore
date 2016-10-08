@@ -5,4 +5,7 @@
 *.[oa]
 *~
 *.out
+*.gch
+avlTest
+bstTest
 main

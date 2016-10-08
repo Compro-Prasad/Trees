@@ -39,24 +39,26 @@ public:
 		this->data = t;
 	}
 
-	void rotateAntiClockwise(baseBranch<Type> **thisAddrPtr) {
+	template <typename branch>
+	void rotateAntiClockwise(branch **thisAddrPtr) {
 #ifdef TESTING
 		if (*thisAddrPtr != this || not this->right)
 			throw "Wrong node selected for rotating anti clockwise";
 #endif
-		baseBranch<Type> *k = this->right->left;
-		this->right->left = this;
-		*thisAddrPtr = this->right;
+		branch *k = (branch *)((branch *)this->right)->left;
+		this->right->left = (branch *)this;
+		*thisAddrPtr = (branch *)this->right;
 		this->right = k;
 	}
-	void rotateClockwise(baseBranch<Type> **thisAddrPtr) {
+	template <typename branch>
+	void rotateClockwise(branch **thisAddrPtr) {
 #ifdef TESTING
 		if (*thisAddrPtr != this || not this->left)
 			throw "Wrong node selected for rotating anti clockwise";
 #endif
-		baseBranch<Type> *k = this->left->right;
-		this->left->right = this;
-		*thisAddrPtr = this->left;
+		branch *k = (branch *)((branch *)this->left)->right;
+		this->left->right = (branch *)this;
+		*thisAddrPtr = (branch *)this->left;
 		this->left = k;
 	}
 
@@ -83,6 +85,19 @@ public:
 	void println() const {
 		this->print("\n");
 	}
+
+	template <typename branch>
+	void removeAll(branch **node) {
+#ifdef TESTING
+		if (*node != this)
+			throw "Bad memory location";
+#endif // TESTING
+		if (this->left)  ((branch *)this->left)->removeAll((branch **)&this->left);
+		if (this->right) ((branch *)this->right)->removeAll((branch **)&this->right);
+		delete *node;
+		*node = NULL;
+	}
+
 	int display_(int is_left, int offset, int depth, char s[50][255]) const ;
 	void display() const ;
 

@@ -17,8 +17,6 @@ public:
 		this->left  = b.left;
 	}
 
-	void removeAll(bstBranch<Type> **node);
-
 	void operator=(const bstBranch &b) {
 		this->data  = b.data;
 		this->right = b.right;
@@ -29,21 +27,8 @@ public:
 	}
 
 	void add(bstBranch<Type> **, Type);
-	bool remove(bstBranch<Type> **, Type);
+	void remove(bstBranch<Type> **, Type);
 };
-
-template <typename Type>
-void bstBranch<Type>::removeAll(bstBranch<Type> **node)
-{
-#ifdef TESTING
-	if (*node != this)
-		throw "Bad memory location";
-#endif // TESTING
-	if (this->left)  ((bstBranch<Type> *)this->left)->removeAll((bstBranch<Type> **)&this->left);
-	if (this->right) ((bstBranch<Type> *)this->right)->removeAll((bstBranch<Type> **)&this->right);
-	delete *node;
-	*node = NULL;
-}
 
 template <typename Type>
 void bstBranch<Type>::add(bstBranch<Type> **root, Type e)
@@ -69,7 +54,7 @@ void bstBranch<Type>::add(bstBranch<Type> **root, Type e)
 }
 
 template <typename Type>
-bool bstBranch<Type>::remove(bstBranch<Type> **root, Type e)
+void bstBranch<Type>::remove(bstBranch<Type> **root, Type e)
 {
 #ifdef TESTING
 	if (this != *root)
@@ -96,11 +81,11 @@ bool bstBranch<Type>::remove(bstBranch<Type> **root, Type e)
 				*root = (bstBranch<Type> *)(*root)->right;
 			}
 			delete z;
-			return 1;
+			return;
 		}
 		root = (bstBranch<Type> **)(e < (*root)->data ? &(*root)->left : &(*root)->right);
 	}
-	return 0;
+	throw "Element not found";
 }
 
 #endif // BSTBRANCH_HPP

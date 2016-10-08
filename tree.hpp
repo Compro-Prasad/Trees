@@ -78,31 +78,47 @@ void tree<node, type>::add(type e)
 template <typename node, typename type>
 void tree<node, type>::add(type a[], size_t size)
 {
-		for (size_t i = 0; i < size; ++i)
-			try
-			{
-				this->root->add(&this->root, a[i]);
-			}		
-			catch (const char *c)
-			{
-				std::cerr << "Error   : Unable to add " << a[i] << " in the tree\n";
-				std::cerr << "Recieved: " << c << "\n";
-			}
+	for (size_t i = 0; i < size; ++i)
+		try
+		{
+			this->root->add(&this->root, a[i]);
+		}
+		catch (const char *c)
+		{
+			std::cerr << "Error   : Unable to add " << a[i] << " in the tree\n";
+			std::cerr << "Recieved: " << c << "\n";
+		}
 }
 
 template <typename node, typename type>
 void tree<node, type>::remove(type e)
 {
-	if (!this->root->remove(&this->root, e))
-		std::cerr << "Error : Unable to remove [ " << e << " ] from the tree\n";
+	try
+	{
+		this->root->remove(&this->root, e);
+	}
+	catch (const char *c)
+	{
+		std::cerr << "Error   : Unable to remove [ " << e << " ] from the tree\n";
+		std::cerr << "Recieved: " << c << "\n";
+	}
 }
 
 template <typename node, typename type>
 void tree<node, type>::remove(type a[], size_t size)
 {
+	this->root->display();
 	for (size_t i = 0; i < size; ++i)
-		if (!this->root->remove(&this->root, a[i]))
-			std::cerr << "Error: Unable to remove [ " << a[i] << " ]\n";
+		try
+		{
+			this->root->remove(&this->root, a[i]);
+		}
+		catch (const char *c)
+		{
+			std::cerr << "Error   : Unable to remove [ " << a[i] << " ]\n";
+			std::cerr << "Recieved: " << c << "\n";
+			this->root->display();
+		}
 }
 
 template <typename node, typename type>

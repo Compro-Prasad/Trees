@@ -3,11 +3,67 @@
 
 #include "baseBranch.hpp"
 
+#define AVLptr(x)  ((avlBranch<Type> *)x)
+#define AVLpptr(x) ((avlBranch<Type> **)x)
+
 template <typename Type>
 class avlBranch : public baseBranch<Type>
 {
 protected:
 	signed char heightBalance;
+	bool balanceRightWeightedTree(avlBranch<Type> **root) {
+		switch (--this->heightBalance)
+		{
+		case -1:
+			return 1;
+		case -2:
+			switch (((avlBranch<Type> *)this->right)->heightBalance)
+			{
+			case 0:  /* Single Rotation */
+			case -1:
+				this->rotateAntiClockwise(root);
+				(*root)->heightBalance =
+					((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
+				break;
+			case +1:  /* Double Rotation */
+				this->right->rotateClockwise(&this->right);
+				((avlBranch<Type> *)((avlBranch<Type> *)this->right)->right)->heightBalance = 1;
+				this->rotateAntiClockwise(root);
+				(*root)->heightBalance = 0;
+				((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
+			}
+		case 0:
+			return 0;
+		}
+	}
+	bool balanceLeftWeightedTree(avlBranch<Type> **root) {
+		switch (++this->heightBalance)
+		{
+		case 0:
+			return 0;
+		case 1:
+			return 1;
+		case 2:
+			switch (((avlBranch<Type> *)this->left)->heightBalance)
+			{
+			case 0:  /* Single Rotation */
+			case +1:
+				this->rotateClockwise(root);
+				(*root)->heightBalance =
+					((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
+				break;
+			case -1:  /* Double Rotation */
+				this->left->rotateAntiClockwise(&this->left);
+				((avlBranch<Type> *)((avlBranch<Type> *)this->left)->left)->heightBalance = 1;
+				this->rotateClockwise(root);
+				(*root)->heightBalance = 0;
+				((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
+			}
+		}
+	}
+
+	Type killElementHaving2Children(avlBranch<Type> **);
+
 public:
 	avlBranch() { this->heightBalance = 0; }
 	avlBranch(Type e) : baseBranch<Type>::baseBranch(e), heightBalance(0) { }
@@ -16,22 +72,9 @@ public:
 		std::cout << "Left  : " << this->left  << "\n\t";
 		std::cout << "Right : " << this->right << "\n";
 	}
-	void removeAll(avlBranch<Type> **);
 	bool add(avlBranch<Type> **, Type);
+	bool remove(avlBranch<Type> **, Type);
 };
-
-template <typename Type>
-void avlBranch<Type>::removeAll(avlBranch<Type> **node)
-{
-#ifdef TESTING
-	if (*node != this)
-		throw "Bad memory location";
-#endif // TESTING
-	if (this->left)  ((avlBranch<Type> *)this->left)->removeAll((avlBranch<Type> **)&this->left);
-	if (this->right) ((avlBranch<Type> *)this->right)->removeAll((avlBranch<Type> **)&this->right);
-	delete *node;
-	*node = NULL;
-}
 
 template <typename Type>
 bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
@@ -47,61 +90,74 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 	}
 	if (e < this->data)
 	{
-		if (((avlBranch<Type> *)this->left)->add((avlBranch<Type> **)&this->left, e))
-		{
-			switch (++this->heightBalance)
-			{
-			case 0:
-				return 0;
-			case 1:
-				return 1;
-			case 2:
-				switch (((avlBranch<Type> *)this->left)->heightBalance)
-				{
-				case +1:  /* Single Rotation */
-					this->rotateClockwise((baseBranch<Type> **)root);
-					((avlBranch<Type> *)(*root))->heightBalance =
-						((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
-					break;
-				case -1:  /* Double Rotation */
-					((avlBranch<Type> *)this->left)->rotateAntiClockwise((baseBranch<Type> **)&this->left);
-					((avlBranch<Type> *)((avlBranch<Type> *)this->left)->left)->heightBalance = 1;
-					this->rotateClockwise((baseBranch<Type> **)root);
-					((avlBranch<Type> *)(*root))->heightBalance = 0;
-					((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
-				}
-			}
-		}
+		if (AVLptr(this->left)->add(AVLpptr(&this->left), e))
+			return balanceLeftWeightedTree(root);
 	}
+	else if (AVLptr(this->right)->add(AVLpptr(&this->right), e))
+		return balanceRightWeightedTree(root);
+	return 0;
+}
+
+template <typename Type>
+Type avlBranch<Type>::killElementHaving2Children(avlBranch<Type> **root)
+{
+#ifdef TESTING
+	if (this || this != *root)
+		throw "Bad memory location";
+#endif // TESTING
+	if ((*root)->left)
+		return AVLptr((*root)->left)->killElementHaving2Children(AVLpptr(&(*root)->left));
 	else
 	{
-		if (((avlBranch<Type> *)this->right)->add((avlBranch<Type> **)&this->right, e))
-		{
-			switch (--this->heightBalance)
-			{
-			case 0:
-				return 0;
-			case -1:
-				return 1;
-			case -2:
-				switch (((avlBranch<Type> *)this->right)->heightBalance)
-				{
-				case -1:  /* Single Rotation */
-					this->rotateAntiClockwise((baseBranch<Type> **)root);
-					((avlBranch<Type> *)(*root))->heightBalance =
-						((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
-					break;
-				case +1:  /* Double Rotation */
-					((avlBranch<Type> *)this->right)->rotateClockwise((baseBranch<Type> **)&this->right);
-					((avlBranch<Type> *)((avlBranch<Type> *)this->right)->right)->heightBalance = 1;
-					this->rotateAntiClockwise((baseBranch<Type> **)root);
-					((avlBranch<Type> *)(*root))->heightBalance = 0;
-					((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
-				}
-			}
-		}
+		Type x = (*root)->data;
+		avlBranch<Type> *z = *root;
+		*root = AVLptr((*root)->right);
+		delete z;
+		return x;
 	}
-	return 0;
+}
+
+template <typename Type>
+bool avlBranch<Type>::remove(avlBranch<Type> **root, Type e)
+{
+	try
+	{
+		if (!*root)
+		{
+			if (e < (*root)->data)
+			{
+				if (AVLptr(this->left)->remove(AVLpptr(&this->left), e))
+					return balanceRightWeightedTree(root);
+			}
+			else if (e > (*root)->data)
+			{
+				if (AVLptr(this->right)->remove(AVLpptr(&this->left), e))
+					return balanceLeftWeightedTree(root);
+			}
+			else
+			{
+				avlBranch<Type> *z = *root;
+				if (z->isLeaf())
+					*root = NULL;
+				else if (z->isOnlyLeftLinked())
+					*root = AVLptr(z->left);
+				else if (z->isOnlyRightLinked())
+					*root = AVLptr(z->right);
+				else
+				{
+					z->data = AVLptr(z->right)->killElementHaving2Children(AVLpptr(&z->right));
+					return 1;
+				}
+				delete z;
+			}
+			return 1;
+		}
+		throw "Element not found\n";
+	}
+	catch (const char *c)
+	{
+		throw c;
+	}
 }
 
 #endif
