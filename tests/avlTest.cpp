@@ -5,7 +5,6 @@
 #include "../avlBranch.hpp"
 
 using namespace std;
-
 template <typename t>
 void display(t *start, const t *end, string sep = " ")
 {

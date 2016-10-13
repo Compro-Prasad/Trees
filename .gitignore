@@ -6,6 +6,10 @@
 *~
 *.out
 *.gch
+*.bak
+*.exe
+*.obj
 avlTest
 bstTest
 main
+G*

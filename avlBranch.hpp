@@ -32,15 +32,13 @@ protected:
 				(*root)->heightBalance = 0;
 				((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
 			}
-		case 0:
-			return 0;
+			/* case 0:; // Not required */
 		}
+		return 0;
 	}
 	bool balanceLeftWeightedTree(avlBranch<Type> **root) {
 		switch (++this->heightBalance)
 		{
-		case 0:
-			return 0;
 		case 1:
 			return 1;
 		case 2:
@@ -59,10 +57,13 @@ protected:
 				(*root)->heightBalance = 0;
 				((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
 			}
+			/* case 0:; // Not required */
 		}
+		return 0;
 	}
 
-	Type killElementHaving2Children(avlBranch<Type> **);
+	Type deleteAndReturnLeftmostChild(avlBranch<Type> **);
+	Type deleteAndReturnRightmostChild(avlBranch<Type> **);
 
 public:
 	avlBranch() { this->heightBalance = 0; }
@@ -91,22 +92,41 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 	if (e < this->data)
 	{
 		if (AVLptr(this->left)->add(AVLpptr(&this->left), e))
-			return balanceLeftWeightedTree(root);
+			return this->balanceLeftWeightedTree(root);
 	}
 	else if (AVLptr(this->right)->add(AVLpptr(&this->right), e))
-		return balanceRightWeightedTree(root);
+		return this->balanceRightWeightedTree(root);
 	return 0;
 }
 
 template <typename Type>
-Type avlBranch<Type>::killElementHaving2Children(avlBranch<Type> **root)
+Type avlBranch<Type>::deleteAndReturnRightmostChild(avlBranch<Type> **root)
+{
+#ifdef TESTING
+	if (this || this != *root)
+		throw "Bad memory location";
+#endif // TESTING
+	if ((*root)->right)
+		return AVLptr((*root)->right)->deleteAndReturnRightmostChild(AVLpptr(&(*root)->right));
+	else
+	{
+		Type x = (*root)->data;
+		avlBranch<Type> *z = *root;
+		*root = AVLptr((*root)->right);
+		delete z;
+		return x;
+	}
+}
+
+template <typename Type>
+Type avlBranch<Type>::deleteAndReturnLeftmostChild(avlBranch<Type> **root)
 {
 #ifdef TESTING
 	if (this || this != *root)
 		throw "Bad memory location";
 #endif // TESTING
 	if ((*root)->left)
-		return AVLptr((*root)->left)->killElementHaving2Children(AVLpptr(&(*root)->left));
+		return AVLptr((*root)->left)->deleteAndReturnLeftmostChild(AVLpptr(&(*root)->left));
 	else
 	{
 		Type x = (*root)->data;
@@ -145,7 +165,7 @@ bool avlBranch<Type>::remove(avlBranch<Type> **root, Type e)
 					*root = AVLptr(z->right);
 				else
 				{
-					z->data = AVLptr(z->right)->killElementHaving2Children(AVLpptr(&z->right));
+					z->data = AVLptr(z->right)->deleteAndReturnLeftmostChild(AVLpptr(&z->right));
 					return 1;
 				}
 				delete z;
