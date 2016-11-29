@@ -11,56 +11,6 @@ class avlBranch : public baseBranch<Type>
 {
 protected:
 	signed char heightBalance;
-	bool balanceRightWeightedTree(avlBranch<Type> **root) {
-		switch (--this->heightBalance)
-		{
-		case -1:
-			return 1;
-		case -2:
-			switch (((avlBranch<Type> *)this->right)->heightBalance)
-			{
-			case 0:  /* Single Rotation */
-			case -1:
-				this->rotateAntiClockwise(root);
-				(*root)->heightBalance =
-					((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
-				break;
-			case +1:  /* Double Rotation */
-				this->right->rotateClockwise(&this->right);
-				((avlBranch<Type> *)((avlBranch<Type> *)this->right)->right)->heightBalance = 1;
-				this->rotateAntiClockwise(root);
-				(*root)->heightBalance = 0;
-				((avlBranch<Type> *)(*root)->left)->heightBalance = 0;
-			}
-			/* case 0:; // Not required */
-		}
-		return 0;
-	}
-	bool balanceLeftWeightedTree(avlBranch<Type> **root) {
-		switch (++this->heightBalance)
-		{
-		case 1:
-			return 1;
-		case 2:
-			switch (((avlBranch<Type> *)this->left)->heightBalance)
-			{
-			case 0:  /* Single Rotation */
-			case +1:
-				this->rotateClockwise(root);
-				(*root)->heightBalance =
-					((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
-				break;
-			case -1:  /* Double Rotation */
-				this->left->rotateAntiClockwise(&this->left);
-				((avlBranch<Type> *)((avlBranch<Type> *)this->left)->left)->heightBalance = 1;
-				this->rotateClockwise(root);
-				(*root)->heightBalance = 0;
-				((avlBranch<Type> *)(*root)->right)->heightBalance = 0;
-			}
-			/* case 0:; // Not required */
-		}
-		return 0;
-	}
 
 	Type deleteAndReturnLeftmostChild(avlBranch<Type> **);
 	Type deleteAndReturnRightmostChild(avlBranch<Type> **);
@@ -92,10 +42,54 @@ bool avlBranch<Type>::add(avlBranch<Type> **root, Type e)
 	if (e < this->data)
 	{
 		if (AVLptr(this->left)->add(AVLpptr(&this->left), e))
-			return this->balanceLeftWeightedTree(root);
+		{
+			switch (++this->heightBalance) {
+			case 1:
+				return 1;
+			case 2:
+				switch (AVLptr(this->left)->heightBalance)
+				{
+				case +1:  /* Single Rotation */
+					this->rotateClockwise(root);
+					(*root)->heightBalance = 0;
+					AVLptr((*root)->right)->heightBalance = 0;
+					break;
+				case -1:  /* Double Rotation */
+					this->left->rotateAntiClockwise(&this->left);
+					AVLptr(AVLptr(this->left)->left)->heightBalance =
+						!!AVLptr(AVLptr(this->left)->left)->left;
+					this->rotateClockwise(root);
+					(*root)->heightBalance = 0;
+					AVLptr((*root)->right)->heightBalance = 0;
+				}
+			}
+			return 0;
+		}
 	}
 	else if (AVLptr(this->right)->add(AVLpptr(&this->right), e))
-		return this->balanceRightWeightedTree(root);
+	{
+		switch (--this->heightBalance) {
+		case -1:
+			return 1;
+		case -2:
+			switch (AVLptr(this->right)->heightBalance)
+			{
+			case -1:  /* Single Rotation */
+				this->rotateAntiClockwise(root);
+				(*root)->heightBalance = 0;
+				AVLptr((*root)->left)->heightBalance = 0;
+				break;
+			case +1:  /* Double Rotation */
+				this->right->rotateClockwise(&this->right);
+				AVLptr(AVLptr(this->right)->right)->heightBalance =
+					-!!AVLptr(AVLptr(this->right)->right)->right;
+				this->rotateAntiClockwise(root);
+				(*root)->heightBalance = 0;
+				AVLptr((*root)->left)->heightBalance = 0;
+			}
+		}
+		return 0;
+	}
 	return 0;
 }
 
@@ -142,17 +136,77 @@ bool avlBranch<Type>::remove(avlBranch<Type> **root, Type e)
 {
 	try
 	{
-		if (!*root)
+#ifdef TESTING
+		if (*root != this)
+			throw "Pointers don't match";
+#endif
+		if (*root)
 		{
 			if (e < (*root)->data)
 			{
 				if (AVLptr(this->left)->remove(AVLpptr(&this->left), e))
-					return balanceRightWeightedTree(root);
+				{
+					switch (--this->heightBalance) {
+					case 0:
+						return 1;
+					case -1:
+						return 0;
+					case -2:
+						switch (AVLptr(this->right)->heightBalance) {
+						case 0:
+							this->rotateAntiClockwise(root);
+							AVLptr((*root)->left)->heightBalance = -1;
+							(*root)->heightBalance = 1;
+							break;
+						case -1:
+							this->rotateAntiClockwise(root);
+							AVLptr((*root)->left)->heightBalance = 0;
+							(*root)->heightBalance = 0;
+							break;
+						case +1:
+							this->right->rotateClockwise(&this->right);
+							AVLptr(AVLptr(this->right)->right)->heightBalance =
+								-!!AVLptr(AVLptr(this->right)->right)->right;
+							this->rotateAntiClockwise(root);
+							(*root)->heightBalance = 0;
+							AVLptr((*root)->left)->heightBalance = 0;
+						}
+					}
+				}
+				return 0;
 			}
 			else if (e > (*root)->data)
 			{
 				if (AVLptr(this->right)->remove(AVLpptr(&this->left), e))
-					return balanceLeftWeightedTree(root);
+				{
+					switch (++this->heightBalance) {
+					case 0:
+						return 1;
+					case +1:
+						return 0;
+					case +2:
+						switch (AVLptr(this->left)->heightBalance) {
+						case 0:
+							this->rotateClockwise(root);
+							AVLptr((*root)->right)->heightBalance = -1;
+							(*root)->heightBalance = 1;
+							break;
+						case +1:
+							this->rotateClockwise(root);
+							AVLptr((*root)->right)->heightBalance = 0;
+							(*root)->heightBalance = 0;
+							break;
+						case -1:
+							this->left->rotateAntiClockwise(&this->left);
+							AVLptr(AVLptr(this->left)->left)->heightBalance =
+								!!AVLptr(AVLptr(this->left)->left)->left;
+							this->rotateClockwise(root);
+							(*root)->heightBalance = 0;
+							AVLptr((*root)->right)->heightBalance = 0;
+						}
+					}
+				}
+				return 0;
 			}
 			else
 			{

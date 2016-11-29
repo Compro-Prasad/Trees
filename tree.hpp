@@ -1,6 +1,7 @@
 #ifndef TREE_HPP
 #define TREE_HPP
 
+#include <algorithm>
 #include <iostream>
 
 template <typename type>
@@ -101,13 +102,13 @@ void tree<node, type>::remove(type e)
 	{
 		std::cerr << "Error   : Unable to remove [ " << e << " ] from the tree\n";
 		std::cerr << "Recieved: " << c << "\n";
+		exit(1);
 	}
 }
 
 template <typename node, typename type>
 void tree<node, type>::remove(type a[], size_t size)
 {
-	this->root->display();
 	for (size_t i = 0; i < size; ++i)
 		try
 		{
@@ -118,6 +119,7 @@ void tree<node, type>::remove(type a[], size_t size)
 			std::cerr << "Error   : Unable to remove [ " << a[i] << " ]\n";
 			std::cerr << "Recieved: " << c << "\n";
 			this->root->display();
+			exit(1);
 		}
 }
 

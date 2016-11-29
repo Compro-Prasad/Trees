@@ -198,9 +198,9 @@ void baseBranch<Type>::inOrderDec(void func(const Type), const Type x) const
 template <typename Type>
 int baseBranch<Type>::display_(int is_left, int offset, int depth, char s[50][255]) const {
 	char b[20];
-	int width = 5;
+	int width = 1;
 
-	sprintf(b, "%03d", this->data);
+	sprintf(b, "%d", this->data);
 
 	int left  = this->left  ? this->left->display_(1, offset, depth + 1, s) : 0;
 	int right = this->right ? this->right->display_(0, offset + left + width, depth + 1, s) : 0;
@@ -251,12 +251,12 @@ int baseBranch<Type>::display_(int is_left, int offset, int depth, char s[50][25
 template <typename Type>
 void baseBranch<Type>::display() const {
 	char s[50][255];
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 10; i++)
 		sprintf(s[i], "%80s", " ");
 
 	this->display_(0, 0, 0, s);
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 10; i++)
 		printf("%s\n", s[i]);
 }
 

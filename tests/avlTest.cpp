@@ -55,11 +55,9 @@ void testRemove(t a[], size_t size)
 	t *b = new t[size];
 
 	tree.add(a, size);
-	tree.display();
 
 	copy(a, a + size, b);
 	sort(b, b + size);
-	display(b, b + size);
 
 	tree.remove(b, size);
 
@@ -92,7 +90,7 @@ void permute(t a[], size_t k, size_t size, void func(t [], size_t))
 
 int main()
 {
-	int a[] = {1, 2, 3, 4, 5, 6, 7};
+	int a[] = {1, 5, 6, 2, 3, 4};
 	permute(a, 0, sizeof(a) / sizeof(int), testAdd);
 	cout << "Tests Passed for inserting elements in AVL Tree\n";
 	cout << "Conclusions:\n";
